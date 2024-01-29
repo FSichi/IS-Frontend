@@ -53,7 +53,7 @@ export const TableForUserList = ({ data }: Props) => {
                             </p>
                         </td>
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap">
-                            <Link to={`/app/clientes/${item.id}`} className='bg-slate-900 py-2 px-4 text-white rounded-md hover:bg-sky-500'>
+                            <Link to={`/app/ventas/${item.id}`} className='bg-slate-900 py-2 px-4 text-white rounded-md hover:bg-sky-500'>
                                 Visualizar
                             </Link>
                         </td>

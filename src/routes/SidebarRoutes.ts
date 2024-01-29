@@ -19,12 +19,12 @@ interface Submenu {
 }
 
 export const sidebarRoutes: SidebarRoutes[] = [
-    {
-        path: '/app/',
-        icon: dashboard,
-        name: 'Dashboard',
-        active: false,
-    },
+    // {
+    //     path: '/app/',
+    //     icon: dashboard,
+    //     name: 'Dashboard',
+    //     active: false,
+    // },
     {
         path: '/app/ventas',
         icon: dashboard,
@@ -49,22 +49,36 @@ export const sidebarRoutes: SidebarRoutes[] = [
         ]
     },
     {
+        path: '/app/complementos',
         icon: dashboard,
-        name: 'Gestion Inventario',
-        dropdown: true,
+        name: 'Gestion Complementos',
         active: false,
-        open: false,
-        submenu: [
-            {
-                path: '/app/colores',
-                name: 'Colores'
-            },
-            {
-                path: '/app/talles',
-                name: 'Talles'
-            }
-        ]
     },
+    // {
+    //     icon: dashboard,
+    //     name: 'Gestion Complementos',
+    //     dropdown: true,
+    //     active: false,
+    //     open: false,
+    //     submenu: [
+    //         {
+    //             path: '/app/colores',
+    //             name: 'Colores'
+    //         },
+    //         {
+    //             path: '/app/talles',
+    //             name: 'Talles'
+    //         },
+    //         {
+    //             path: '/app/marca',
+    //             name: 'Marca'
+    //         },
+    //         {
+    //             path: '/app/categoria',
+    //             name: 'Categoria'
+    //         }
+    //     ]
+    // },
     {
         icon: config,
         name: 'Configuracion',
