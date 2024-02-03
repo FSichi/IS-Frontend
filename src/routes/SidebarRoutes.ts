@@ -1,5 +1,5 @@
-import dashboard from "../assets/dashboard.svg";
-import config from "../assets/config.svg";
+import dashboard from '../assets/dashboard.svg';
+import config from '../assets/config.svg';
 // import telemarket from "../assets/telemarket.svg";
 // import consulta from "../assets/consulta1.svg";
 
@@ -40,13 +40,13 @@ export const sidebarRoutes: SidebarRoutes[] = [
         submenu: [
             {
                 path: '/app/articulos-base',
-                name: 'Articulos Base'
+                name: 'Articulos Base',
             },
             {
                 path: '/app/articulos-stock',
-                name: 'Articulos en Stock'
-            }
-        ]
+                name: 'Articulos en Stock',
+            },
+        ],
     },
     {
         path: '/app/complementos',
@@ -88,16 +88,16 @@ export const sidebarRoutes: SidebarRoutes[] = [
         submenu: [
             {
                 path: '/app/users',
-                name: 'Usuarios'
+                name: 'Usuarios',
             },
             {
                 path: '/app/permisos',
-                name: 'Permisos'
+                name: 'Permisos',
             },
             {
                 path: '/app/help',
-                name: 'Ayuda'
-            }
-        ]
-    }
-]
+                name: 'Ayuda',
+            },
+        ],
+    },
+];

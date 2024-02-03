@@ -1,4 +1,3 @@
-
 interface Props {
     title: string;
     action: () => void;
@@ -6,13 +5,10 @@ interface Props {
     customClass?: string;
 }
 
-export const ActionButton = ({ title, action, customClass, type = "button" }: Props) => {
+export const ActionButton = ({ title, action, customClass, type = 'button' }: Props) => {
     return (
-        <button
-            onClick={action} type={type}
-            className={`py-2 px-4 rounded-md ${customClass}`}
-        >
+        <button onClick={action} type={type} className={`w-40 py-2 px-4 rounded-md ${customClass}`}>
             {title}
         </button>
-    )
-}
+    );
+};
