@@ -1,5 +1,3 @@
 export const Categoria = () => {
-  return (
-    <div>Categoria</div>
-  )
-}
+    return <div>Categoria</div>;
+};

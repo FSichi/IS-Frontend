@@ -1,5 +1,3 @@
 export const Talle = () => {
-  return (
-    <div>Talle</div>
-  )
-}
+    return <div>Talle</div>;
+};

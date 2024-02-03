@@ -1,5 +1,3 @@
 export const Marca = () => {
-  return (
-    <div>Marca</div>
-  )
-}
+    return <div>Marca</div>;
+};

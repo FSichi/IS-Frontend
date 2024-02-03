@@ -1,5 +1,3 @@
 export const Color = () => {
-  return (
-    <div>Color</div>
-  )
-}
+    return <div>Color</div>;
+};
