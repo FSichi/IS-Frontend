@@ -3,27 +3,17 @@ import { Link } from 'react-router-dom';
 interface Props {
     data: {
         id: number;
-        nombre: string;
-        apellido: string;
-        documento: string;
-        empresa: string;
-        contrato: string;
-        cese: string;
+        cliente: string;
+        vendedor: string;
+        fecha: string;
+        tipoPago: string;
+        monto: string;
         estado: string;
     }[];
 }
 
-export const TableForUserList = ({ data }: Props) => {
-    const headers = [
-        'Nombre',
-        'Apellido',
-        'Documento',
-        'Empresa',
-        'Contrato',
-        'Cese',
-        'Estado',
-        'Accion',
-    ];
+export const TableForVentasList = ({ data }: Props) => {
+    const headers = ['Cliente', 'Vendedor', 'Fecha', 'Tipo de Pago', 'Monto', 'Estado', 'Accion'];
 
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
@@ -43,26 +33,23 @@ export const TableForUserList = ({ data }: Props) => {
                 {data.map(item => (
                     <tr className="bg-white border-b" key={item.id}>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.nombre}
+                            {item.cliente}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.apellido}
+                            {item.vendedor}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.documento}
+                            {item.fecha}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.empresa}
+                            {item.tipoPago}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.contrato}
-                        </td>
-                        <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.cese}
+                            $ {item.monto}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
                             <p
-                                className={`rounded-md py-1 ${item.estado === 'Activo' ? 'bg-teal-300 ' : 'bg-indigo-300'}`}>
+                                className={`rounded-md py-1 ${item.estado === 'Finalizado' ? 'bg-teal-300 ' : 'bg-indigo-300'}`}>
                                 {item.estado}
                             </p>
                         </td>
