@@ -15,8 +15,8 @@ export const NuevaVenta = () => {
 
     const tabContentAlumnoOptions = [
         { value: 1, title: 'Articulos', component: <Articulos /> },
-        { value: 2, title: 'Resumen', component: <Resumen /> },
-        { value: 3, title: 'Pago', component: <Pago /> },
+        { value: 2, title: 'Pago', component: <Pago /> },
+        { value: 3, title: 'Resumen', component: <Resumen /> },
     ];
 
     return (
@@ -25,7 +25,7 @@ export const NuevaVenta = () => {
                 <OptionsHeader />
             </PageHeader>
 
-            <div className="bg-gray-800 mx-auto w-2/5 mt-5 py-5 rounded-lg">
+            <div className="bg-gray-800 mx-auto w-3/6 3xl:w-2/5 mt-5 py-5 rounded-lg">
                 <div className="flex justify-center">
                     {tabContentAlumnoOptions.map(option => {
                         return (
