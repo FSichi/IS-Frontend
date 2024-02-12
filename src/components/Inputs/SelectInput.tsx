@@ -5,10 +5,11 @@ interface Props {
     inputName: string;
     inputTitle?: string;
     placeholder?: boolean;
+    placeholderText?: string;
     customInputClassName?: string;
     customContainerClassName?: string;
     options: {
-        value: string;
+        value: string | number;
         label: string;
     }[];
 }
@@ -18,6 +19,7 @@ export const SelectInput = ({
     inputName,
     inputTitle,
     placeholder,
+    placeholderText,
     options,
     customInputClassName,
     customContainerClassName,
@@ -32,7 +34,7 @@ export const SelectInput = ({
                 bg-gray-100 border-2 border-gray-300 placeholder-gray-500 shadow-lg shadow-gray-800
                 focus:border-orange-600 focus:outline-none
                  ${customInputClassName}`}>
-                {placeholder && <option value="">Seleccione...</option>}
+                {placeholder && <option value="">{placeholderText}</option>}
                 {options.map(option => (
                     <option key={option.value} value={option.value}>
                         {option.label}

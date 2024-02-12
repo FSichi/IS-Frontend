@@ -1,5 +1,5 @@
-import { TableForMarcaList } from '../../../../components/Table/TalbeForComplementosList';
-import { tableComplementosData } from '../../../../data/mocks/tableComplementosData';
+import { TableForMarcaList } from '../../../../components/Table/TableForComplementosList';
+import { tableMarcaData } from '../../../../data/mocks/tableComplementosData';
 
 export const Marca = () => {
     return (
@@ -7,7 +7,7 @@ export const Marca = () => {
             <div className="md:flex bg-gray-800 rounded-lg shadow-lg shadow-gray-400 p-5">
                 <div className="md:w-1/2 p-5">
                     <div className="bg-white rounded-lg">
-                        <TableForMarcaList data={tableComplementosData} />
+                        <TableForMarcaList data={tableMarcaData} />
                     </div>
                 </div>
                 <div className="md:w-1/2 p-5">

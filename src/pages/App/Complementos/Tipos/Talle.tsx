@@ -1,5 +1,5 @@
-import { TableForTalleList } from '../../../../components/Table/TalbeForComplementosList';
-import { tableComplementosData } from '../../../../data/mocks/tableComplementosData';
+import { TableForTalleList } from '../../../../components/Table/TableForComplementosList';
+import { tableTalleData } from '../../../../data/mocks/tableComplementosData';
 
 export const Talle = () => {
     return (
@@ -7,7 +7,7 @@ export const Talle = () => {
             <div className="md:flex bg-gray-800 rounded-lg shadow-lg shadow-gray-400 p-5">
                 <div className="md:w-1/2 p-5">
                     <div className="bg-white rounded-lg">
-                        <TableForTalleList data={tableComplementosData} />
+                        <TableForTalleList data={tableTalleData} />
                     </div>
                 </div>
                 <div className="md:w-1/2 p-5">

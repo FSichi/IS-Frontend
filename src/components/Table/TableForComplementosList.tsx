@@ -1,17 +1,33 @@
 import { Link } from 'react-router-dom';
 
-interface Props {
+interface ColorProps {
     data: {
         id: number;
         color: string;
+    }[];
+    getColor: (value: string) => void;
+}
+interface MarcaProps {
+    data: {
+        id: number;
+        marca: string;
+    }[];
+}
+interface TalleProps {
+    data: {
+        id: number;
         talle: string;
         tipoTalle: string;
-        marca: string;
+    }[];
+}
+interface CategoriaProps {
+    data: {
+        id: number;
         categoria: string;
     }[];
 }
 
-export const TableForColorList = ({ data }: Props) => {
+export const TableForColorList = ({ data, getColor }: ColorProps) => {
     const headers = ['Color', 'Accion'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
@@ -34,16 +50,16 @@ export const TableForColorList = ({ data }: Props) => {
                             {item.color}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2">
+                            <button
+                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
+                                onClick={() => {
+                                    getColor(item.color);
+                                }}>
                                 Modificar
-                            </Link>
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
+                            </button>
+                            <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
                                 Eliminar
-                            </Link>
+                            </button>
                         </td>
                     </tr>
                 ))}
@@ -52,7 +68,7 @@ export const TableForColorList = ({ data }: Props) => {
     );
 };
 
-export const TableForCategoriaList = ({ data }: Props) => {
+export const TableForCategoriaList = ({ data }: CategoriaProps) => {
     const headers = ['Categoria', 'Accion'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
@@ -93,7 +109,7 @@ export const TableForCategoriaList = ({ data }: Props) => {
     );
 };
 
-export const TableForMarcaList = ({ data }: Props) => {
+export const TableForMarcaList = ({ data }: MarcaProps) => {
     const headers = ['Marca', 'Accion'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
@@ -134,7 +150,7 @@ export const TableForMarcaList = ({ data }: Props) => {
     );
 };
 
-export const TableForTalleList = ({ data }: Props) => {
+export const TableForTalleList = ({ data }: TalleProps) => {
     const headers = ['Talle', 'Tipo de talle', 'Accion'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react';
 import './styles.css';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
     placeholder?: string;
     customInputClassName?: string;
     customContainerClassName?: string;
+    value?: any;
 }
 
 export const TextInput = ({
@@ -21,11 +23,13 @@ export const TextInput = ({
     placeholder,
     customInputClassName,
     customContainerClassName,
+    value,
 }: Props) => {
     return (
         <div className={`${customContainerClassName}`}>
             {inputTitle && <p className="text-lg">{inputTitle}</p>}
             <input
+                // value={value ?? ''}
                 type={inputType}
                 name={inputName}
                 placeholder={placeholder}
