@@ -11,7 +11,7 @@ interface Props {
     placeholder?: string;
     customInputClassName?: string;
     customContainerClassName?: string;
-    value?: any;
+    disabled?: boolean;
 }
 
 export const TextInput = ({
@@ -23,20 +23,20 @@ export const TextInput = ({
     placeholder,
     customInputClassName,
     customContainerClassName,
-    value,
+    disabled,
 }: Props) => {
     return (
         <div className={`${customContainerClassName}`}>
             {inputTitle && <p className="text-lg">{inputTitle}</p>}
             <input
-                // value={value ?? ''}
+                disabled={disabled ?? false}
                 type={inputType}
                 name={inputName}
-                placeholder={placeholder}
+                placeholder={disabled ? '' : placeholder}
                 onKeyPress={keyPressEvent}
                 className={`text-md mt-2 px-2 py-1 rounded-md w-full text-black text-center
-                bg-gray-100 border-2 border-gray-300 placeholder-gray-500 shadow-lg shadow-gray-800
-                focus:border-orange-600 focus:outline-none formInput
+                 border-2 border-gray-300 placeholder-gray-500 shadow-lg shadow-gray-800
+                focus:border-orange-600 focus:outline-none formInput ${disabled ? 'bg-gray-500' : 'bg-gray-100'}
                  ${customInputClassName}`}
                 {...registerForm}
             />

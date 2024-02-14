@@ -76,7 +76,7 @@ export const Articulos = () => {
                     <ActionButton
                         title="Buscar"
                         action={() => {}}
-                        customClass="bg-gray-900 ml-3 hover:bg-indigo-400 hover:text-gray-900"
+                        customClass="bg-gray-900 ml-3 hover:bg-indigo-400 hover:text-gray-900 mt-2"
                     />
                 </div>
 
