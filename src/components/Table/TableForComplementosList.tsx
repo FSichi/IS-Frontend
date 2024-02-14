@@ -12,6 +12,7 @@ interface MarcaProps {
         id: number;
         marca: string;
     }[];
+    getMarca: (value: string) => void;
 }
 interface TalleProps {
     data: {
@@ -19,12 +20,15 @@ interface TalleProps {
         talle: string;
         tipoTalle: string;
     }[];
+    getTalle: (value: string) => void;
+    getTipoTalle: (value: string) => void;
 }
 interface CategoriaProps {
     data: {
         id: number;
         categoria: string;
     }[];
+    getCategoria: (value: string) => void;
 }
 
 export const TableForColorList = ({ data, getColor }: ColorProps) => {
@@ -68,7 +72,7 @@ export const TableForColorList = ({ data, getColor }: ColorProps) => {
     );
 };
 
-export const TableForCategoriaList = ({ data }: CategoriaProps) => {
+export const TableForCategoriaList = ({ data, getCategoria }: CategoriaProps) => {
     const headers = ['Categoria', 'Accion'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
@@ -91,16 +95,16 @@ export const TableForCategoriaList = ({ data }: CategoriaProps) => {
                             {item.categoria}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2">
+                            <button
+                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
+                                onClick={() => {
+                                    getCategoria(item.categoria);
+                                }}>
                                 Modificar
-                            </Link>
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
+                            </button>
+                            <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
                                 Eliminar
-                            </Link>
+                            </button>
                         </td>
                     </tr>
                 ))}
@@ -109,7 +113,7 @@ export const TableForCategoriaList = ({ data }: CategoriaProps) => {
     );
 };
 
-export const TableForMarcaList = ({ data }: MarcaProps) => {
+export const TableForMarcaList = ({ data, getMarca }: MarcaProps) => {
     const headers = ['Marca', 'Accion'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
@@ -132,16 +136,16 @@ export const TableForMarcaList = ({ data }: MarcaProps) => {
                             {item.marca}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2">
+                            <button
+                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
+                                onClick={() => {
+                                    getMarca(item.marca);
+                                }}>
                                 Modificar
-                            </Link>
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
+                            </button>
+                            <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
                                 Eliminar
-                            </Link>
+                            </button>
                         </td>
                     </tr>
                 ))}
