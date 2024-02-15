@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 interface ColorProps {
     data: {
         id: number;
@@ -20,8 +18,7 @@ interface TalleProps {
         talle: string;
         tipoTalle: string;
     }[];
-    getTalle: (value: string) => void;
-    getTipoTalle: (value: string) => void;
+    getTalle: (value: string, value2: string) => void;
 }
 interface CategoriaProps {
     data: {
@@ -154,7 +151,7 @@ export const TableForMarcaList = ({ data, getMarca }: MarcaProps) => {
     );
 };
 
-export const TableForTalleList = ({ data }: TalleProps) => {
+export const TableForTalleList = ({ data, getTalle }: TalleProps) => {
     const headers = ['Talle', 'Tipo de talle', 'Accion'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
@@ -180,16 +177,16 @@ export const TableForTalleList = ({ data }: TalleProps) => {
                             {item.tipoTalle}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2">
+                            <button
+                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
+                                onClick={() => {
+                                    getTalle(item.talle, item.tipoTalle);
+                                }}>
                                 Modificar
-                            </Link>
-                            <Link
-                                to={`#`}
-                                className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
+                            </button>
+                            <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
                                 Eliminar
-                            </Link>
+                            </button>
                         </td>
                     </tr>
                 ))}
