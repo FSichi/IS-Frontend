@@ -14,7 +14,7 @@ export const TableForArticulosBaseList = ({ data }: Props) => {
     const headers = [
         'Codigo de barra',
         'Descripcion',
-        'Precio',
+        'Coste Final',
         'Marca',
         'Categoria',
         'Estado',

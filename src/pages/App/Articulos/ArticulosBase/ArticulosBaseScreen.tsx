@@ -6,9 +6,15 @@ import { PaginationSection } from '../../../../components/Pagination/PaginationS
 import { useState } from 'react';
 import { TableForArticulosBaseList } from '../../../../components/Table/TableFroArticulosBaseList';
 import { tableArticulosBaseData } from '../../../../data/mocks/tableArticulosBaseData';
+import { NewArticleModal } from '../../../../components/Modals/NewArticleModal';
 
 export const ArticulosBaseScreen = () => {
     const [current, setCurrent] = useState(1);
+
+    const [openModalNewProduct, setOpenModalNewProduct] = useState(false);
+
+    const onOpenModal = () => setOpenModalNewProduct(true);
+    const onCloseModal = () => setOpenModalNewProduct(false);
 
     const onChangeCurrent = (value: number) => {
         setCurrent(value);
@@ -18,9 +24,13 @@ export const ArticulosBaseScreen = () => {
         <section>
             <div>
                 <PageHeader title="Articulos">
-                    <OptionsHeader /* clienteModal={onOpenModal} */ />
+                    <OptionsHeader clienteModal={onOpenModal} />
                 </PageHeader>
             </div>
+
+            {openModalNewProduct && (
+                <NewArticleModal openValue={openModalNewProduct} closeFunction={onCloseModal} />
+            )}
 
             <div className="flex justify-center bg-gray-800 mx-auto w-3/6 mt-5 py-5 rounded-lg">
                 <div>
@@ -30,7 +40,8 @@ export const ArticulosBaseScreen = () => {
                         inputType={'text'}
                         placeholder={'Codigo de articulo'}
                         keyPressEvent={() => {}}
-                        registerForm={{ ...('#', { required: false }) }}
+                        // registerForm={{ ...('#', { required: false }) }}
+                        registerForm={() => {}}
                         customContainerClassName="text-center text-black pr-6 mb-2"
                     />
                 </div>

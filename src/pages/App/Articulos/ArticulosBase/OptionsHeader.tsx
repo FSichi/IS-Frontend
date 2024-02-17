@@ -5,12 +5,10 @@ interface OptionsProps {
 }
 export const OptionsHeader = ({ clienteModal }: OptionsProps) => {
     return (
-        <>
-            <ActionButton
-                title="Nuevo Articulo"
-                customClass="bg-gray-800 text-white"
-                action={clienteModal}
-            />
-        </>
+        <ActionButton
+            title="Nuevo Articulo"
+            customClass="bg-gray-800 text-white"
+            action={clienteModal}
+        />
     );
 };
