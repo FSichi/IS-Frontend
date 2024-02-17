@@ -1,54 +1,53 @@
-import React from 'react';
 import Select from 'react-select';
 
-export const customStyles = {
-    control: (provided: any, state: any) => ({
-        ...provided,
-        borderRadius: 7,
+const customStyles = {
+    // control: (provided: any, _state: any) => ({
+    //     ...provided,
+    //     borderRadius: 7,
+    // }),
+    control: (baseStyles: any, state: { isFocused: any }) => ({
+        ...baseStyles,
+        borderColor: state.isFocused ? 'grey' : 'red',
     }),
-    option: (provided: any, state: { isSelected: any }) => ({
+    option: (provided: any, _state: { isSelected: any }) => ({
         ...provided,
-        color: state.isSelected ? 'black' : 'black',
         padding: 12,
         minHeight: '46px',
         height: '46px',
+        color: 'black', // Añade esta línea para cambiar el color del texto a negro
     }),
-    valueContainer: (provided: any, state: any) => ({
+    valueContainer: (provided: any, _state: any) => ({
         ...provided,
         height: '46px',
         padding: '0 6px',
     }),
-    input: (provided: any, state: any) => ({
+    input: (provided: any, _state: any) => ({
         ...provided,
         margin: '0px',
     }),
-    indicatorSeparator: (state: any) => ({
+    indicatorSeparator: (_state: any) => ({
         display: 'none',
     }),
-    indicatorsContainer: (provided: any, state: any) => ({
+    indicatorsContainer: (provided: any, _state: any) => ({
         ...provided,
         height: '46px',
     }),
 };
 
 interface Props {
-    onChange: (value: string, label: string) => void;
+    onChange: (value: { value: string | number; label: string } | null) => void;
+    options: { value: string | number; label: string }[];
+    value: { value: string | number; label: string } | null;
 }
 
-export const ReactSelect = ({ onChange }: Props) => {
+export const ReactSelect = ({ onChange, options, value }: Props) => {
     return (
         <Select
-            className="font-bold text-center text-white mt-2"
+            // className=""
             styles={customStyles}
-            options={[
-                { value: '1', label: 'Opción 1' },
-                { value: '2', label: 'Opción 2' },
-            ]}
-            onChange={newValue => {
-                if (newValue) {
-                    onChange(newValue.value, newValue.label);
-                }
-            }}
+            options={options}
+            value={value}
+            onChange={onChange}
             isSearchable={false}
             placeholder={'Seleccione...'}
             // defaultValue={optionValueProfesion}
