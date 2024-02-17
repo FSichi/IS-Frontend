@@ -81,7 +81,7 @@ export const Pago = () => {
                             <TextInput
                                 inputName={'cuit'}
                                 inputType={'text'}
-                                placeholder={'Cuit...'}
+                                placeholder={'DNI/CUIT...'}
                                 keyPressEvent={() => {}}
                                 registerForm={() => {}}
                                 customContainerClassName="w-full"
@@ -91,9 +91,41 @@ export const Pago = () => {
                     </div>
                 </div>
 
-                <div className="w-1/2 ">
+                <div className="w-1/2">
                     <div className="bg-gray-500 mr-2 p-3 rounded-md">
-                        <CreditCard />
+                        <div className="flex justify-between">
+                            <h1 className="text-lg mb-3">Tipo de Pago:</h1>
+                        </div>
+                        <div className="p-3 bg-gray-800 rounded-md flex justify-center">
+                            <div className="text-lg">
+                                <TextInput
+                                    inputName={'efectivo'}
+                                    inputType={'checkbox'}
+                                    inputTitle={'Efectivo'}
+                                    keyPressEvent={() => {}}
+                                    registerForm={() => {}}
+                                    // registerForm={{ ...register('color', { required: false }) }}
+                                    customContainerClassName="ml-5 mr-5"
+                                    customInputClassName="h-4"
+                                />
+                            </div>
+                            <div className="text-lg">
+                                <TextInput
+                                    inputName={'tarjeta'}
+                                    inputType={'checkbox'}
+                                    inputTitle={'Tarjeta'}
+                                    keyPressEvent={() => {}}
+                                    registerForm={() => {}}
+                                    // registerForm={{ ...register('color', { required: false }) }}
+                                    customContainerClassName="ml-5 mr-5"
+                                    customInputClassName="h-4"
+                                />
+                            </div>
+                        </div>
+                        <div className="border-gray-200 border-b-2 mt-3"></div>
+                        <div className="mt-2">
+                            <CreditCard />
+                        </div>
                     </div>
                 </div>
             </div>
