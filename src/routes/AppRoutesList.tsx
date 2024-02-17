@@ -4,6 +4,8 @@ import { AppRoutesInterface } from '../interfaces/Routes';
 import { VentasList } from '../pages/App/Ventas/VentasList';
 import { NuevaVenta } from '../pages/App/Ventas/Add/NuevaVenta';
 import { ComplementosScreen } from '../pages/App/Complementos/ComplementosScreen';
+import { ArticulosBaseScreen } from '../pages/App/Articulos/ArticulosBase/ArticulosBaseScreen';
+import { ArticulosStockScreen } from '../pages/App/Articulos/ArticulosScreen/ArticulosStockScreen';
 
 export const AppRoutesList: AppRoutesInterface[] = [
     {
@@ -35,6 +37,22 @@ export const AppRoutesList: AppRoutesInterface[] = [
         component: (
             <ProtectedRoute>
                 <NuevaVenta />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: '/articulos-base',
+        component: (
+            <ProtectedRoute>
+                <ArticulosBaseScreen />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: '/articulos-stock',
+        component: (
+            <ProtectedRoute>
+                <ArticulosStockScreen />
             </ProtectedRoute>
         ),
     },

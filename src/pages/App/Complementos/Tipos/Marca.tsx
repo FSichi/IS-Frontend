@@ -64,7 +64,7 @@ export const Marca = () => {
                             placeholder={'...'}
                             keyPressEvent={() => {}}
                             registerForm={{ ...register('marca', { required: false }) }}
-                            customContainerClassName="ml-5 mr-5"
+                            customContainerClassName="ml-5 mr-5 pt-5 text-center text-black"
                         />
                         <div className="border-b border-gray-400 mt-10"></div>
                         <div

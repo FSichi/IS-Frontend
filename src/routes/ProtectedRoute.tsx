@@ -1,13 +1,12 @@
-import React from 'react'
+import React from 'react';
 
 // import { ToastToken } from '../utils/ToastSweetAlert';
 
 interface Props {
-    children: React.ReactNode
+    children: React.ReactNode;
 }
 
 export const ProtectedRoute = ({ children }: Props) => {
-
     // const navigate = useNavigate()
     // const { authenticated } = useSelector(state => state.auth);
 
@@ -19,9 +18,5 @@ export const ProtectedRoute = ({ children }: Props) => {
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [])
 
-    return (
-        <>
-            {children}
-        </>
-    )
-}
+    return <>{children}</>;
+};

@@ -1,7 +1,7 @@
-import { LoginScreen } from "../pages/Auth/LoginScreen";
-import { RegisterScreen } from "../pages/Auth/RegisterScreen";
+import { LoginScreen } from '../pages/Auth/LoginScreen';
+import { RegisterScreen } from '../pages/Auth/RegisterScreen';
 
-import { AppRoutesInterface } from "../interfaces/Routes";
+import { AppRoutesInterface } from '../interfaces/Routes';
 
 export const AuthRoutesList: AppRoutesInterface[] = [
     {
@@ -11,5 +11,5 @@ export const AuthRoutesList: AppRoutesInterface[] = [
     {
         path: '/register',
         component: <RegisterScreen />,
-    }
-]
+    },
+];
