@@ -18,21 +18,23 @@ export const Resumen = () => {
                     customClass="bg-gray-900 text-white ml-3 hover:bg-cyan-400 hover:text-gray-900 mt-2"
                 />
             </div>
-            <ReactSelect
-                onChange={newValue => {
-                    if (newValue) {
-                        setOptionValue(newValue);
-                    } else {
-                        setOptionValue({ label: '', value: '' });
-                    }
-                }}
-                value={optionValue}
-                options={[
-                    { value: '1', label: 'Opción 1' },
-                    { value: '2', label: 'Opción 2' },
-                    { value: '3', label: 'Opción 3' },
-                ]}
-            />
+            <div className="text-black">
+                <ReactSelect
+                    onChange={newValue => {
+                        if (newValue) {
+                            setOptionValue(newValue);
+                        } else {
+                            setOptionValue({ label: '', value: '' });
+                        }
+                    }}
+                    value={optionValue}
+                    options={[
+                        { value: '1', label: 'Opción 1' },
+                        { value: '2', label: 'Opción 2' },
+                        { value: '3', label: 'Opción 3' },
+                    ]}
+                />
+            </div>
         </div>
     );
 };
