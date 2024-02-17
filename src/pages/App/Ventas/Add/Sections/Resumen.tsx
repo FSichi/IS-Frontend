@@ -1,3 +1,4 @@
+import ReactSelect from 'react-select';
 import { ActionButton } from '../../../../../components/Buttons/ActionButton';
 
 export const Resumen = () => {
@@ -9,6 +10,7 @@ export const Resumen = () => {
                 action={() => {}}
                 customClass="bg-gray-900 text-white ml-3 hover:bg-cyan-400 hover:text-gray-900 mt-2"
             />
+            {/* <ReactSelect onChange={() => {}} /> */}
         </div>
     );
 };
