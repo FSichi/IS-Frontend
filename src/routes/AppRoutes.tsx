@@ -24,7 +24,8 @@ export const AppRoutes = () => {
                             <Route path={route.path} element={route.component} key={i} />
                         ))}
 
-                        <Route path={'/'} element={<Navigate to="/app/dashboard" replace />} />
+                        {/* <Route path={'/'} element={<Navigate to="/app/dashboard" replace />} /> */}
+                        <Route path={'/'} element={<Navigate to="/app/ventas" replace />} />
                         <Route path={'/404'} element={<Error404 />} />
                         <Route path="*" element={<Navigate to="/app/404" replace />} />
                     </Routes>
