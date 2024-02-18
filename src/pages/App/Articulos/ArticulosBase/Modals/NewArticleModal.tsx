@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { categoriaOptions, marcaOptions } from '../../../../../data/select/selectOptions';
 import { ActionButton } from '../../../../../components/Buttons/ActionButton';
@@ -24,29 +25,35 @@ type FormFilterValues = {
     netoGrabado: number;
 };
 
+type NameSelectInputs = 'marca' | 'categoria';
+
+type SelectedOptionType = {
+    value: string | number;
+    label: string;
+};
+
 export const NewArticleModal = ({ value, type }: Props) => {
-    const { register, handleSubmit } = useForm<FormFilterValues>();
+    const { closeModal, openModal, state } = useContext(ModalContext);
+
+    const { register, handleSubmit, setValue } = useForm<FormFilterValues>();
+
+    const [selectValues, setSelectValues] = useState({
+        marca: { label: '', value: '' },
+        categoria: { label: '', value: '' },
+    });
+
+    const handleChangeSelect = (name: NameSelectInputs, selectedOption: SelectedOptionType) => {
+        setSelectValues(prevValues => ({ ...prevValues, [name]: selectedOption }));
+        setValue(name, selectedOption.value as string); // Actualizar valor en react-hook-form
+    };
+
+    useEffect(() => {
+        value && openModal();
+    }, [value]);
 
     const onSubmit = handleSubmit(data => {
         console.log(data);
     });
-
-    const [optionValueMarca, setOptionValueMarca] = useState({
-        label: 'Universal',
-        value: '1',
-    });
-
-    const [optionValueCategoria, setOptionValueCategoria] = useState({
-        label: 'Universal',
-        value: '1',
-    });
-
-    const { closeModal, openModal, state } = React.useContext(ModalContext);
-
-    useEffect(() => {
-        value && openModal();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value]);
 
     return (
         <>
@@ -66,37 +73,28 @@ export const NewArticleModal = ({ value, type }: Props) => {
                             />
                             <ReactSelect
                                 inputTitle="Marca"
-                                onChange={newValue => {
-                                    if (newValue) {
-                                        setOptionValueMarca({
-                                            label: newValue.label,
-                                            value: newValue.value.toString(),
-                                        });
-                                    } else {
-                                        setOptionValueMarca({ label: '', value: '' });
-                                    }
-                                }}
-                                value={optionValueMarca}
+                                value={selectValues.marca}
+                                onChange={selectedOption =>
+                                    handleChangeSelect(
+                                        'marca',
+                                        selectedOption || { value: '', label: '' },
+                                    )
+                                }
                                 options={marcaOptions}
                                 isSearchable
                             />
                             <ReactSelect
                                 inputTitle="Categoria"
-                                onChange={newValue => {
-                                    if (newValue) {
-                                        setOptionValueCategoria({
-                                            label: newValue.label,
-                                            value: newValue.value.toString(),
-                                        });
-                                    } else {
-                                        setOptionValueCategoria({ label: '', value: '' });
-                                    }
-                                }}
-                                value={optionValueCategoria}
+                                value={selectValues.categoria}
+                                onChange={selectedOption =>
+                                    handleChangeSelect(
+                                        'categoria',
+                                        selectedOption || { value: '', label: '' },
+                                    )
+                                }
                                 options={categoriaOptions}
                                 isSearchable
                             />
-
                             <TextInput
                                 inputName={'costo'}
                                 inputType={'number'}
@@ -160,6 +158,7 @@ export const NewArticleModal = ({ value, type }: Props) => {
                         <div className="flex justify-end">
                             <ActionButton
                                 title="Registrar Cliente"
+                                type="submit"
                                 action={() => {}}
                                 customClass="bg-teal-400 text-black hover:bg-teal-400 mt-5 "
                             />
