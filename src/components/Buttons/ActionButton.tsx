@@ -15,3 +15,14 @@ export const ActionButton = ({ title, action, customClass, type = 'button' }: Pr
         </button>
     );
 };
+
+export const TableButton = ({ title, action, customClass, type = 'button' }: Props) => {
+    return (
+        <button
+            onClick={action && action}
+            type={type}
+            className={`py-2 px-4 rounded-md ${customClass}`}>
+            {title}
+        </button>
+    );
+};

@@ -1,14 +1,14 @@
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
 
 interface OptionsProps {
-    clienteModal: () => void;
+    newArticleModal: () => void;
 }
-export const OptionsHeader = ({ clienteModal }: OptionsProps) => {
+export const OptionsHeader = ({ newArticleModal }: OptionsProps) => {
     return (
         <ActionButton
             title="Nuevo Articulo"
             customClass="bg-gray-800 text-white"
-            action={clienteModal}
+            action={newArticleModal}
         />
     );
 };

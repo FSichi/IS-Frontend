@@ -1,20 +1,26 @@
+import { TableButton } from '../Buttons/ActionButton';
+
 interface Props {
     data: {
         id: number;
         codigoBarra: number;
         descripcion: string;
         precioFinal: number;
+        ganancia: number;
         marca: string;
         categoria: string;
         estado: string;
     }[];
+    openStateModal: (type: 'active' | 'inactive') => void;
+    openProductModal: (type: 'new' | 'edit') => void;
 }
 
-export const TableForArticulosBaseList = ({ data }: Props) => {
+export const TableForArticulosBaseList = ({ data, openStateModal, openProductModal }: Props) => {
     const headers = [
         'Codigo de barra',
         'Descripcion',
         'Coste Final',
+        'Ganancia',
         'Marca',
         'Categoria',
         'Estado',
@@ -48,6 +54,9 @@ export const TableForArticulosBaseList = ({ data }: Props) => {
                             {item.precioFinal}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
+                            {item.ganancia}
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
                             {item.marca}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
@@ -55,17 +64,27 @@ export const TableForArticulosBaseList = ({ data }: Props) => {
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
                             <p
-                                className={`rounded-md py-1 ${item.estado === 'Finalizado' ? 'bg-teal-300 ' : 'bg-indigo-300'}`}>
+                                className={`rounded-md py-1 ${item.estado === 'Activo' ? 'bg-teal-300 ' : 'bg-indigo-300'}`}>
                                 {item.estado}
                             </p>
                         </td>
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap">
-                            <button className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2">
-                                Modificar
-                            </button>
-                            <button className="py-2 px-4  text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
-                                Desactivar
-                            </button>
+                            <TableButton
+                                title="Modificar"
+                                action={() => {
+                                    openProductModal('edit');
+                                }}
+                                customClass="text-white rounded-md bg-cyan-500 hover:bg-black mr-2 w-24"
+                            />
+                            <TableButton
+                                title={item.estado === 'Activo' ? 'Deshabilitar' : 'Activar'}
+                                action={() => {
+                                    openStateModal(
+                                        item.estado === 'Activo' ? 'inactive' : 'active',
+                                    );
+                                }}
+                                customClass={`rounded-md ${item.estado === 'Activo' ? 'bg-red-600 text-white ' : 'bg-teal-300 text-black hover:text-white'} hover:bg-black ml-2 w-24`}
+                            />
                         </td>
                     </tr>
                 ))}

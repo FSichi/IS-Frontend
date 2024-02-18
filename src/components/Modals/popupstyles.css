@@ -29,7 +29,7 @@
 @media (min-width: 1537px) {
     .customModal {
         max-width: 1100px;
-        height: 500px;
+        /* height: 500px; */
     }
 
 
