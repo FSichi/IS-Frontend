@@ -1,29 +1,35 @@
-import { useState } from 'react';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
-import { ReactSelect } from '../../../../components/Inputs/ReactSelect';
-import { TextInput, TextInputDisabled } from '../../../../components/Inputs/TextInput';
+import { TextInput } from '../../../../components/Inputs/TextInput';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
+import { TableForArticulosStockList } from '../../../../components/Table/TableForArticulosStockList';
+import { PaginationSection } from '../../../../components/Pagination/PaginationSection';
+import { ModalContext } from '../../../../context/modal.context';
+import { tableArticulosStockData } from '../../../../data/mocks/tableArticulosStockData';
+import { StateModal } from './StateModal';
+import React, { useState, useEffect } from 'react';
 
 export const ArticulosStockScreen = () => {
-    const [optionValueTipoTalle, setOptionValueTipoTalle] = useState({
-        label: 'Universal',
-        value: '1',
-    });
+    const [current, setCurrent] = useState(1);
 
-    const [optionValueTalle, setOptionValueTalle] = useState({
-        label: 'Universal',
-        value: '1',
-    });
+    const onChangeCurrent = (value: number) => {
+        setCurrent(value);
+    };
+    const { state } = React.useContext(ModalContext);
+    const [openModalState, setOpenModalState] = useState(false);
 
-    const [optionValueColor, setOptionValueColor] = useState({
-        label: 'Universal',
-        value: '1',
-    });
-
+    const openModalStateType = () => {
+        setOpenModalState(true);
+    };
+    useEffect(() => {
+        if (!state) {
+            setOpenModalState(false);
+        }
+    }, [state]);
     return (
         <section>
             <PageHeader title="Articulos en Stock" />
 
+            <StateModal value={openModalState} />
             <div className="flex justify-center bg-gray-800 mx-auto w-2/6 mt-5 py-5 rounded-lg">
                 <div>
                     <TextInput
@@ -45,126 +51,19 @@ export const ArticulosStockScreen = () => {
                     />
                 </div>
             </div>
-
-            <div className="flex justify-center">
-                <div className="flex bg-gray-800 rounded-lg m-5 p-4 w-4/6">
-                    <div className="rounded-lg bg-slate-400 w-1/2 mr-5 p-5">
-                        <TextInputDisabled
-                            inputName={'name'}
-                            customInputClassName={'mt-0 h-10 text-white '}
-                            disabled
-                            value={'001'}
-                        />
-                        <TextInputDisabled
-                            inputName={'name'}
-                            customContainerClassName="mt-5"
-                            customInputClassName={'mt-0 h-10 text-white'}
-                            disabled
-                            value={'Remera Manga Larga'}
-                        />
-                        <TextInputDisabled
-                            inputName={'name'}
-                            customContainerClassName="mt-5"
-                            customInputClassName={'mt-0 h-10 text-white'}
-                            disabled
-                            value={'lacoste'}
-                        />
-                        <TextInputDisabled
-                            inputName={'name'}
-                            customContainerClassName="mt-5"
-                            customInputClassName={'mt-0 h-10 text-white'}
-                            disabled
-                            value={'descripcion'}
-                        />
-                    </div>
-                    <form className="w-1/2 ml-5">
-                        <div className="mb-10">
-                            <ReactSelect
-                                inputTitle="Tipo Talle"
-                                onChange={newValue => {
-                                    if (newValue) {
-                                        setOptionValueTipoTalle({
-                                            label: newValue.label,
-                                            value: newValue.value.toString(),
-                                        });
-                                    } else {
-                                        setOptionValueTipoTalle({ label: '', value: '' });
-                                    }
-                                }}
-                                value={optionValueTipoTalle}
-                                options={[
-                                    { value: '1', label: 'Universal' },
-                                    { value: '2', label: 'Americano' },
-                                    { value: '3', label: 'Europeo' },
-                                    { value: '4', label: 'Otro' },
-                                ]}
-                                isSearchable
-                            />
-                            <ReactSelect
-                                inputTitle="Numero de Talle"
-                                customInputContainer="mt-5"
-                                onChange={newValue => {
-                                    if (newValue) {
-                                        setOptionValueTalle({
-                                            label: newValue.label,
-                                            value: newValue.value.toString(),
-                                        });
-                                    } else {
-                                        setOptionValueTalle({ label: '', value: '' });
-                                    }
-                                }}
-                                value={optionValueTalle}
-                                options={[
-                                    { value: '1', label: 'XL' },
-                                    { value: '2', label: 'L' },
-                                    { value: '3', label: 'M' },
-                                    { value: '4', label: 'S' },
-                                ]}
-                                isSearchable
-                            />
-                            <ReactSelect
-                                inputTitle="Color"
-                                customInputContainer="mt-5"
-                                onChange={newValue => {
-                                    if (newValue) {
-                                        setOptionValueColor({
-                                            label: newValue.label,
-                                            value: newValue.value.toString(),
-                                        });
-                                    } else {
-                                        setOptionValueColor({ label: '', value: '' });
-                                    }
-                                }}
-                                value={optionValueColor}
-                                options={[
-                                    { value: '1', label: 'Rojo' },
-                                    { value: '2', label: 'Negro' },
-                                    { value: '3', label: 'Azul' },
-                                    { value: '4', label: 'Amarillo' },
-                                    { value: '5', label: 'Naranja' },
-                                    { value: '6', label: 'Morado' },
-                                ]}
-                                isSearchable
-                            />
-                        </div>
-
-                        <div className="flex justify-center">
-                            <ActionButton
-                                title="Cancelar"
-                                customClass="bg-red-500 hover:bg-black py-2 px-4 text-white rounded-md mr-4"
-                                action={() => {}}
-                                type="button"
-                            />
-                            <ActionButton
-                                title="Modificar/Agregar"
-                                customClass="bg-cyan-500 hover:bg-black py-2 px-4 text-white rounded-md ml-2"
-                                action={() => {}}
-                                type="submit"
-                            />
-                        </div>
-                    </form>
-                </div>
+            <div className="mt-6 overflow-x-auto">
+                <TableForArticulosStockList
+                    data={tableArticulosStockData}
+                    openStateModal={openModalStateType}
+                />
             </div>
+
+            <PaginationSection
+                current={current}
+                changeCurrent={onChangeCurrent}
+                pageSize={10}
+                totalElements={100}
+            />
         </section>
     );
 };
