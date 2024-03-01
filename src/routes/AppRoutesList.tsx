@@ -5,7 +5,7 @@ import { VentasList } from '../pages/App/Ventas/VentasList';
 import { NuevaVenta } from '../pages/App/Ventas/Add/NuevaVenta';
 import { ComplementosScreen } from '../pages/App/Complementos/ComplementosScreen';
 import { ArticulosBaseScreen } from '../pages/App/Articulos/ArticulosBase/ArticulosBaseScreen';
-import { ArticulosStockScreen } from '../pages/App/Articulos/ArticulosScreen/ArticulosStockScreen';
+import { ArticulosStockScreen } from '../pages/App/Articulos/ArticulosStock/ArticulosStockScreen';
 
 export const AppRoutesList: AppRoutesInterface[] = [
     {
