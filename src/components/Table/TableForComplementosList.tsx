@@ -1,31 +1,37 @@
 interface ColorProps {
     data: {
-        id: number;
-        color: string;
+        idColor: number;
+        nombre: string;
     }[];
-    getColor: (value: string) => void;
+    getColor: (idColor: number, nombre: string) => void;
 }
 interface MarcaProps {
     data: {
-        id: number;
-        marca: string;
+        idMarca: number;
+        nombre: string;
     }[];
-    getMarca: (value: string) => void;
+    getMarca: (idMarca: number, nombre: string) => void;
 }
 interface TalleProps {
     data: {
-        id: number;
-        talle: string;
-        tipoTalle: string;
+        idTalle: number;
+        talleArticulo: string;
+        idTipoTalle: number;
+        descripcion: string;
     }[];
-    getTalle: (value: string, value2: string) => void;
+    getTalle: (
+        idTalle: number,
+        talleArticulo: string,
+        idTipoTalle: number,
+        descripcion: string,
+    ) => void;
 }
 interface CategoriaProps {
     data: {
-        id: number;
-        categoria: string;
+        idCategoria: number;
+        descripcion: string;
     }[];
-    getCategoria: (value: string) => void;
+    getCategoria: (idCategoria: number, descripcion: string) => void;
 }
 
 export const TableForColorList = ({ data, getColor }: ColorProps) => {
@@ -45,22 +51,22 @@ export const TableForColorList = ({ data, getColor }: ColorProps) => {
                 </tr>
             </thead>
             <tbody>
-                {data.map(item => (
-                    <tr className="bg-white border-b" key={item.id}>
+                {data.map((item, index) => (
+                    <tr className="bg-white border-b" key={index}>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.color}
+                            {item.nombre}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
                             <button
-                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
+                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2 w-1"
                                 onClick={() => {
-                                    getColor(item.color);
+                                    getColor(item.idColor, item.nombre);
                                 }}>
                                 Modificar
                             </button>
-                            <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
+                            {/* <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
                                 Eliminar
-                            </button>
+                            </button> */}
                         </td>
                     </tr>
                 ))}
@@ -70,7 +76,8 @@ export const TableForColorList = ({ data, getColor }: ColorProps) => {
 };
 
 export const TableForCategoriaList = ({ data, getCategoria }: CategoriaProps) => {
-    const headers = ['Categoria', 'Accion'];
+    // const headers = ['Categoria', 'Accion'];
+    const headers = ['Categoria'];
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
             <thead className="border-b bg-gray-800">
@@ -86,23 +93,23 @@ export const TableForCategoriaList = ({ data, getCategoria }: CategoriaProps) =>
                 </tr>
             </thead>
             <tbody>
-                {data.map(item => (
-                    <tr className="bg-white border-b" key={item.id}>
+                {data.map((item, index) => (
+                    <tr className="bg-white border-b" key={index}>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.categoria}
+                            {item.descripcion}
                         </td>
-                        <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
+                        {/* <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
                             <button
                                 className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
                                 onClick={() => {
-                                    getCategoria(item.categoria);
+                                    getCategoria(item.idCategoria, item.descripcion);
                                 }}>
                                 Modificar
                             </button>
                             <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
                                 Eliminar
                             </button>
-                        </td>
+                        </td> */}
                     </tr>
                 ))}
             </tbody>
@@ -127,22 +134,22 @@ export const TableForMarcaList = ({ data, getMarca }: MarcaProps) => {
                 </tr>
             </thead>
             <tbody>
-                {data.map(item => (
-                    <tr className="bg-white border-b" key={item.id}>
+                {data.map((item, index) => (
+                    <tr className="bg-white border-b" key={index}>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.marca}
+                            {item.nombre}
                         </td>
-                        <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
+                        <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex justify-center">
                             <button
-                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
+                                className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500  mr-2 w-32"
                                 onClick={() => {
-                                    getMarca(item.marca);
+                                    getMarca(item.idMarca, item.nombre);
                                 }}>
                                 Modificar
                             </button>
-                            <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
+                            {/* <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
                                 Eliminar
-                            </button>
+                            </button> */}
                         </td>
                     </tr>
                 ))}
@@ -152,7 +159,9 @@ export const TableForMarcaList = ({ data, getMarca }: MarcaProps) => {
 };
 
 export const TableForTalleList = ({ data, getTalle }: TalleProps) => {
-    const headers = ['Talle', 'Tipo de talle', 'Accion'];
+    // const headers = ['Talle', 'Tipo de talle', 'Accion'];
+    const headers = ['Talle', 'Tipo de talle'];
+
     return (
         <table className="table border text-center rounded-lg overflow-hidden w-full">
             <thead className="border-b bg-gray-800">
@@ -168,26 +177,28 @@ export const TableForTalleList = ({ data, getTalle }: TalleProps) => {
                 </tr>
             </thead>
             <tbody>
-                {data.map(item => (
-                    <tr className="bg-white border-b" key={item.id}>
+                {data.map((item, index) => (
+                    <tr className="bg-white border-b" key={index}>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.talle}
+                            {item.talleArticulo}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.tipoTalle}
+                            {item.descripcion}
                         </td>
-                        <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
+                        {/* <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap flex ">
                             <button
                                 className="py-2 px-4 text-white rounded-md hover:bg-black bg-cyan-500 flex-auto mr-2"
                                 onClick={() => {
-                                    getTalle(item.talle, item.tipoTalle);
+                                    getTalle(
+                                        item.idTalle,
+                                        item.talleArticulo,
+                                        item.idTipoTalle,
+                                        item.descripcion,
+                                    );
                                 }}>
                                 Modificar
                             </button>
-                            <button className="py-2 px-4 text-white rounded-md bg-red-600 hover:bg-black flex-auto ml-2">
-                                Eliminar
-                            </button>
-                        </td>
+                        </td> */}
                     </tr>
                 ))}
             </tbody>

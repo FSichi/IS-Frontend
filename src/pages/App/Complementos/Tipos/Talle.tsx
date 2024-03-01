@@ -1,56 +1,130 @@
 import { useForm } from 'react-hook-form';
 import { TableForTalleList } from '../../../../components/Table/TableForComplementosList'; // Asegúrate de tener este componente
-import { tableTalleData } from '../../../../data/mocks/tableComplementosData'; // Asegúrate de tener estos datos
-import { useState } from 'react';
+// import { tableTalleData } from '../../../../data/mocks/tableComplementosData'; // Asegúrate de tener estos datos
+import { useEffect, useState } from 'react';
 import { TextInput } from '../../../../components/Inputs/TextInput';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addComplemento,
+    getTallesList,
+    updateComplemento,
+} from '../../../../redux/slices/complementos';
+import { ReactSelect } from '../../../../components/Inputs/ReactSelect';
 
 type FormFilterValues = {
-    tipoTalle: string;
+    tipoTalle: number;
     talle: string;
 };
 
+type NameSelectInputs = 'tipoTalle';
+
+type SelectedOptionType = {
+    value: string;
+    label: string;
+};
+
 export const Talle = () => {
+    const dispatch = useDispatch();
+
     const {
-        register,
-        handleSubmit,
-        setValue: setInputFormValue,
-    } = useForm<FormFilterValues>({
-        defaultValues: { tipoTalle: '', talle: '' },
+        complementoList,
+        isLoading: isTalleListLoading,
+        complementoChange,
+    } = useSelector((state: any) => state.complementos);
+
+    const { register, handleSubmit, setValue: setInputFormValue } = useForm<FormFilterValues>({});
+
+    const [selectValues, setSelectValues] = useState({
+        tipoTalle: { label: '', value: '' },
     });
 
-    const [talleSelected, setTalleSelected] = useState('');
+    const handleChangeSelect = (name: NameSelectInputs, selectedOption: SelectedOptionType) => {
+        setSelectValues(prevValues => ({ ...prevValues, [name]: selectedOption }));
+        setInputFormValue(name, Number(selectedOption.value)); // Actualizar valor en react-hook-form
+    };
+
+    const [talleSelected, setTalleSelected] = useState({
+        idTalle: 0,
+        talleArticulo: '',
+        idTipoTalle: 0,
+        descripcion: '',
+    });
+
     const [isEdit, setIsEdit] = useState(false);
 
-    const obtenerTalle = (tipoTalle: string, talle: string) => {
+    const obtenerTalle = (
+        idTalle: number,
+        talleArticulo: string,
+        idTipoTalle: number,
+        descripcion: string,
+    ) => {
         const talleSelectedPrev = talleSelected;
-        setTalleSelected(`${tipoTalle} - ${talle}`);
+        setTalleSelected({
+            idTalle,
+            talleArticulo,
+            idTipoTalle,
+            descripcion,
+        });
 
-        setInputFormValue('tipoTalle', tipoTalle);
-        setInputFormValue('talle', talle);
+        setSelectValues({
+            tipoTalle: { value: idTipoTalle as unknown as string, label: descripcion },
+        });
 
-        talleSelectedPrev === '' && setIsEdit(true);
+        setInputFormValue('tipoTalle', idTipoTalle);
+        setInputFormValue('talle', talleArticulo);
+
+        talleSelectedPrev.talleArticulo === '' && setIsEdit(true);
     };
 
     const cleanForm = () => {
-        setTalleSelected('');
-        setInputFormValue('tipoTalle', '');
+        setTalleSelected({
+            idTalle: 0,
+            talleArticulo: '',
+            idTipoTalle: 0,
+            descripcion: '',
+        });
+        setInputFormValue('tipoTalle', 0);
         setInputFormValue('talle', '');
         setIsEdit(false);
     };
 
     const onSubmit = handleSubmit(data => {
-        /* LÓGICA BACKEND */
+        const { idTalle } = talleSelected;
 
-        console.log(data);
+        const body = {
+            talleArticulo: data.talle,
+            idTipoTalle: data.tipoTalle,
+            Descripcion: '',
+        };
+
+        // console.log('Data: ', data);
+        // console.log('Body: ', body);
+
+        isEdit
+            ? dispatch(updateComplemento({ ...body, idTalle }, '/Talle'))
+            : dispatch(addComplemento(body, '/Talle'));
     });
+
+    useEffect(() => {
+        dispatch(getTallesList('/Talle'));
+    }, [complementoChange]);
 
     return (
         <section className="p-5">
             <div className="md:flex bg-gray-800 rounded-lg shadow-lg shadow-gray-400 p-5">
                 <div className="md:w-1/2 p-5">
                     <div className="border-2 border-white rounded-lg">
-                        <TableForTalleList data={tableTalleData} getTalle={obtenerTalle} />
+                        <TableForTalleList
+                            data={
+                                isTalleListLoading
+                                    ? []
+                                    : complementoList[1].tallesList !== undefined
+                                      ? complementoList[1].tallesList
+                                      : []
+                            }
+                            getTalle={obtenerTalle}
+                        />
                     </div>
                 </div>
                 <div className="md:w-1/2 p-5">
@@ -59,22 +133,38 @@ export const Talle = () => {
                             {!isEdit ? 'Agregar Nuevo Talle' : 'Editar Talle'}
                         </h1>
                         <div className="border-b border-gray-400"></div>
-                        <TextInput
-                            inputName={'Tipo Talle'}
-                            inputType={'text'}
-                            inputTitle={'Tipo Talle'}
-                            placeholder={'...'}
-                            keyPressEvent={() => {}}
-                            registerForm={{ ...register('talle', { required: false }) }}
-                            customContainerClassName="ml-5 mr-5 pt-5 text-center text-black"
+
+                        <ReactSelect
+                            inputTitle="Tipo Talle"
+                            value={selectValues.tipoTalle}
+                            onChange={selectedOption =>
+                                handleChangeSelect(
+                                    'tipoTalle',
+                                    {
+                                        value: selectedOption!.value as string,
+                                        label: selectedOption!.label,
+                                    } || { value: '', label: '' },
+                                )
+                            }
+                            options={
+                                complementoList[0].tipoTallesList !== undefined
+                                    ? complementoList[0].tipoTallesList.map((item: any) => ({
+                                          value: item.idTipoTalle,
+                                          label: item.descripcion,
+                                      }))
+                                    : []
+                            }
+                            isSearchable
+                            customInputContainer="ml-5 mr-5 pt-5 text-center text-black"
                         />
+
                         <TextInput
                             inputName={'Talle'}
                             inputType={'text'}
                             inputTitle={'Talle'}
                             placeholder={'...'}
                             keyPressEvent={() => {}}
-                            registerForm={{ ...register('tipoTalle', { required: false }) }}
+                            registerForm={{ ...register('talle', { required: false }) }}
                             customContainerClassName="ml-5 mr-5 pt-5 text-center text-black"
                         />
                         <div className="border-b border-gray-400 mt-10"></div>

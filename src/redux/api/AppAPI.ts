@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-export const AppAPI = (token: string) => {
+export const AppAPI = (_token?: string) => {
     return axios.create({
-        baseURL: 'http://localhost:4000/api',
+        // baseURL: 'http://localhost:4000/api',
+        baseURL: 'http://tiendita.somee.com/api',
         headers: {
             'Content-Type': 'application/json',
             Accept: '*/*',
-            'x-token': token,
+            'Access-Control-Allow-Origin': '*',
+            // 'x-token': token,
         },
     });
 };

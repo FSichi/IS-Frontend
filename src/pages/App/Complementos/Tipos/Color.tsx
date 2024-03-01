@@ -2,14 +2,28 @@ import { useForm } from 'react-hook-form';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
 import { TextInput } from '../../../../components/Inputs/TextInput';
 import { TableForColorList } from '../../../../components/Table/TableForComplementosList';
-import { tableColorData } from '../../../../data/mocks/tableComplementosData';
-import { useState } from 'react';
+// import { tableColorData } from '../../../../data/mocks/tableComplementosData';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addComplemento,
+    getComplementosList,
+    updateComplemento,
+} from '../../../../redux/slices/complementos';
 
 type FormFilterValues = {
     color: string;
 };
 
 export const Color = () => {
+    const dispatch = useDispatch();
+
+    const {
+        complementoList,
+        isLoading: isColorListLoading,
+        complementoChange,
+    } = useSelector((state: any) => state.complementos);
+
     const {
         register,
         handleSubmit,
@@ -18,36 +32,56 @@ export const Color = () => {
         defaultValues: { color: '' },
     });
 
-    const [colorSelected, setColorSelected] = useState('');
+    const [colorSelected, setColorSelected] = useState({
+        idColor: 0,
+        nombre: '',
+    });
+
     const [isEdit, setIsEdit] = useState(false);
 
-    const obtenerColor = (color: string) => {
+    const obtenerColor = (idColor: number, nombre: string) => {
         const colorSelectedPrev = colorSelected;
-        setColorSelected(color);
+        setColorSelected({ idColor, nombre });
 
-        setInputFormValue('color', color);
+        setInputFormValue('color', nombre);
 
-        colorSelectedPrev === '' && setIsEdit(true);
+        colorSelectedPrev.nombre === '' && setIsEdit(true);
     };
 
     const cleanForm = () => {
-        setColorSelected('');
+        setColorSelected({
+            idColor: 0,
+            nombre: '',
+        });
         setInputFormValue('color', '');
         setIsEdit(false);
     };
 
     const onSubmit = handleSubmit(data => {
-        /* LOGICA BACK */
+        const { idColor } = colorSelected;
 
-        console.log(data);
+        const body = {
+            nombre: data.color,
+        };
+
+        isEdit
+            ? dispatch(updateComplemento({ ...body, idColor }, '/Color'))
+            : dispatch(addComplemento(body, '/Color'));
     });
+
+    useEffect(() => {
+        dispatch(getComplementosList('/Color'));
+    }, [complementoChange]);
 
     return (
         <section className="p-5">
             <div className="md:flex bg-gray-800 rounded-lg shadow-lg shadow-gray-400 p-5">
                 <div className="md:w-1/2 p-5">
                     <div className="border-2 border-white rounded-lg">
-                        <TableForColorList data={tableColorData} getColor={obtenerColor} />
+                        <TableForColorList
+                            data={isColorListLoading ? [] : complementoList}
+                            getColor={obtenerColor}
+                        />
                     </div>
                 </div>
                 <div className="md:w-1/2 p-5">

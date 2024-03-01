@@ -1,15 +1,29 @@
 import { useForm } from 'react-hook-form';
 import { TableForMarcaList } from '../../../../components/Table/TableForComplementosList';
-import { tableMarcaData } from '../../../../data/mocks/tableComplementosData';
-import { useState } from 'react';
+// import { tableMarcaData } from '../../../../data/mocks/tableComplementosData';
+import { useEffect, useState } from 'react';
 import { TextInput } from '../../../../components/Inputs/TextInput';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addComplemento,
+    getComplementosList,
+    updateComplemento,
+} from '../../../../redux/slices/complementos';
 
 type FormFilterValues = {
     marca: string;
 };
 
 export const Marca = () => {
+    const dispatch = useDispatch();
+
+    const {
+        complementoList,
+        isLoading: isMarcaListLoading,
+        complementoChange,
+    } = useSelector((state: any) => state.complementos);
+
     const {
         register,
         handleSubmit,
@@ -18,36 +32,56 @@ export const Marca = () => {
         defaultValues: { marca: '' },
     });
 
-    const [marcaSelected, setMarcaSelected] = useState('');
+    const [marcaSelected, setMarcaSelected] = useState({
+        idMarca: 0,
+        nombre: '',
+    });
+
     const [isEdit, setIsEdit] = useState(false);
 
-    const obtenerMarca = (marca: string) => {
+    const obtenerMarca = (idMarca: number, nombre: string) => {
         const marcaSelectedPrev = marcaSelected;
-        setMarcaSelected(marca);
+        setMarcaSelected({ idMarca, nombre });
 
-        setInputFormValue('marca', marca);
+        setInputFormValue('marca', nombre);
 
-        marcaSelectedPrev === '' && setIsEdit(true);
+        marcaSelectedPrev.nombre === '' && setIsEdit(true);
     };
 
     const cleanForm = () => {
-        setMarcaSelected('');
+        setMarcaSelected({
+            idMarca: 0,
+            nombre: '',
+        });
         setInputFormValue('marca', '');
         setIsEdit(false);
     };
 
     const onSubmit = handleSubmit(data => {
-        /* LOGICA BACK */
+        const { idMarca } = marcaSelected;
 
-        console.log(data);
+        const body = {
+            nombre: data.marca,
+        };
+
+        isEdit
+            ? dispatch(updateComplemento({ ...body, idMarca }, '/Marca'))
+            : dispatch(addComplemento(body, '/Marca'));
     });
+
+    useEffect(() => {
+        dispatch(getComplementosList('/Marca'));
+    }, [complementoChange]);
 
     return (
         <section className="p-5">
             <div className="md:flex bg-gray-800 rounded-lg shadow-lg shadow-gray-400 p-5">
                 <div className="md:w-1/2 p-5">
                     <div className="border-2 border-white rounded-lg">
-                        <TableForMarcaList data={tableMarcaData} getMarca={obtenerMarca} />
+                        <TableForMarcaList
+                            data={isMarcaListLoading ? [] : complementoList}
+                            getMarca={obtenerMarca}
+                        />
                     </div>
                 </div>
                 <div className="md:w-1/2 p-5">

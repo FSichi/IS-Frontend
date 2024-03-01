@@ -1,15 +1,29 @@
 import { useForm } from 'react-hook-form';
 import { TableForCategoriaList } from '../../../../components/Table/TableForComplementosList';
 import { tableCategoriasData } from '../../../../data/mocks/tableComplementosData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TextInput } from '../../../../components/Inputs/TextInput';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addComplemento,
+    getComplementosList,
+    updateComplemento,
+} from '../../../../redux/slices/complementos';
 
 type FormFilterValues = {
     categoria: string;
 };
 
 export const Categoria = () => {
+    const dispatch = useDispatch();
+
+    const {
+        complementoList,
+        isLoading: isCategoriaListLoading,
+        complementoChange,
+    } = useSelector((state: any) => state.complementos);
+
     const {
         register,
         handleSubmit,
@@ -18,29 +32,49 @@ export const Categoria = () => {
         defaultValues: { categoria: '' },
     });
 
-    const [categoriaSelected, setCategoriaSelected] = useState('');
+    const [categoriaSelected, setCategoriaSelected] = useState({
+        idCategoria: 0,
+        descripcion: '',
+    });
+
     const [isEdit, setIsEdit] = useState(false);
 
-    const obtenerCategoria = (categoria: string) => {
+    const obtenerCategoria = (idCategoria: number, descripcion: string) => {
         const categoriaSelectedPrev = categoriaSelected;
-        setCategoriaSelected(categoria);
+        setCategoriaSelected({
+            idCategoria,
+            descripcion,
+        });
 
-        setInputFormValue('categoria', categoria);
+        setInputFormValue('categoria', descripcion);
 
-        categoriaSelectedPrev === '' && setIsEdit(true);
+        categoriaSelectedPrev.descripcion === '' && setIsEdit(true);
     };
 
     const cleanForm = () => {
-        setCategoriaSelected('');
+        setCategoriaSelected({
+            idCategoria: 0,
+            descripcion: '',
+        });
         setInputFormValue('categoria', '');
         setIsEdit(false);
     };
 
     const onSubmit = handleSubmit(data => {
-        /* LOGICA BACK */
+        const { idCategoria } = categoriaSelected;
 
-        console.log(data);
+        const body = {
+            Descripcion: data.categoria,
+        };
+
+        isEdit
+            ? dispatch(updateComplemento({ ...body, idCategoria }, '/Categoria'))
+            : dispatch(addComplemento(body, '/Categoria'));
     });
+
+    useEffect(() => {
+        dispatch(getComplementosList('/Categoria'));
+    }, [complementoChange]);
 
     return (
         <section className="p-5">
@@ -48,7 +82,7 @@ export const Categoria = () => {
                 <div className="md:w-1/2 p-5">
                     <div className="border-2 border-white rounded-lg">
                         <TableForCategoriaList
-                            data={tableCategoriasData}
+                            data={isCategoriaListLoading ? [] : complementoList}
                             getCategoria={obtenerCategoria}
                         />
                     </div>
