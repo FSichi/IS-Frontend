@@ -74,7 +74,9 @@ export const createArticle = (body: Article, closeModal: any) => {
 
             closeModal();
             // dispatch(startArticulosChangeProcess());
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         } catch (error: any) {
             console.log(error);
             ToastNotification.fire({ icon: 'error', title: error.response.data });
