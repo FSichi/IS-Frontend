@@ -56,12 +56,8 @@ export const NewArticleModal = ({ value, type }: Props) => {
 
     const handleChangeSelect = (name: NameSelectInputs, selectedOption: SelectedOptionType) => {
         setSelectValues(prevValues => ({ ...prevValues, [name]: selectedOption }));
-        setValue(name, selectedOption.value as string); // Actualizar valor en react-hook-form
+        setValue(name, selectedOption.value as string);
     };
-
-    useEffect(() => {
-        value && openModal();
-    }, [value]);
 
     const onSubmit = handleSubmit(data => {
         const dataToSend: Article = {
@@ -85,6 +81,10 @@ export const NewArticleModal = ({ value, type }: Props) => {
         const action = type === 'new' ? createArticle : updateArticle;
         dispatch(action(dataToSend, closeModal));
     });
+
+    useEffect(() => {
+        value && openModal();
+    }, [value]);
 
     useEffect(() => {
         if (costo === undefined || margenGanancia === undefined || porcentajeIVA === undefined) {
