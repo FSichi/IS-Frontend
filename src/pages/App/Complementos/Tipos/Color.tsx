@@ -4,7 +4,7 @@ import { TextInput } from '../../../../components/Inputs/TextInput';
 import { TableForColorList } from '../../../../components/Table/TableForComplementosList';
 // import { tableColorData } from '../../../../data/mocks/tableComplementosData';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/dispatch.hook';
 import {
     addComplemento,
     getComplementosList,
@@ -16,13 +16,13 @@ type FormFilterValues = {
 };
 
 export const Color = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const {
         complementoList,
         isLoading: isColorListLoading,
         complementoChange,
-    } = useSelector((state: any) => state.complementos);
+    } = useAppSelector((state: any) => state.complementos);
 
     const {
         register,
@@ -71,6 +71,7 @@ export const Color = () => {
 
     useEffect(() => {
         dispatch(getComplementosList('/Color'));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [complementoChange]);
 
     return (
@@ -79,7 +80,15 @@ export const Color = () => {
                 <div className="md:w-1/2 p-5">
                     <div className="border-2 border-white rounded-lg">
                         <TableForColorList
-                            data={isColorListLoading ? [] : complementoList}
+                            data={
+                                isColorListLoading
+                                    ? []
+                                    : complementoList !== undefined &&
+                                        complementoList.length > 0 &&
+                                        complementoList !== null
+                                      ? complementoList
+                                      : []
+                            }
                             getColor={obtenerColor}
                         />
                     </div>

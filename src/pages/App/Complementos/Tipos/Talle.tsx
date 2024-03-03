@@ -4,13 +4,13 @@ import { TableForTalleList } from '../../../../components/Table/TableForCompleme
 import { useEffect, useState } from 'react';
 import { TextInput } from '../../../../components/Inputs/TextInput';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
-import { useDispatch, useSelector } from 'react-redux';
 import {
     addComplemento,
     getTallesList,
     updateComplemento,
 } from '../../../../redux/slices/complementos';
 import { ReactSelect } from '../../../../components/Inputs/ReactSelect';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/dispatch.hook';
 
 type FormFilterValues = {
     tipoTalle: number;
@@ -25,13 +25,13 @@ type SelectedOptionType = {
 };
 
 export const Talle = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const {
         complementoList,
         isLoading: isTalleListLoading,
         complementoChange,
-    } = useSelector((state: any) => state.complementos);
+    } = useAppSelector(state => state.complementos);
 
     const { register, handleSubmit, setValue: setInputFormValue } = useForm<FormFilterValues>({});
 
@@ -98,9 +98,6 @@ export const Talle = () => {
             Descripcion: '',
         };
 
-        // console.log('Data: ', data);
-        // console.log('Body: ', body);
-
         isEdit
             ? dispatch(updateComplemento({ ...body, idTalle }, '/Talle'))
             : dispatch(addComplemento(body, '/Talle'));
@@ -108,6 +105,7 @@ export const Talle = () => {
 
     useEffect(() => {
         dispatch(getTallesList('/Talle'));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [complementoChange]);
 
     return (
@@ -119,8 +117,10 @@ export const Talle = () => {
                             data={
                                 isTalleListLoading
                                     ? []
-                                    : complementoList[1].tallesList !== undefined
-                                      ? complementoList[1].tallesList
+                                    : complementoList.tallesList !== undefined &&
+                                        complementoList.tallesList.length > 0 &&
+                                        complementoList.tallesList !== null
+                                      ? complementoList.tallesList
                                       : []
                             }
                             getTalle={obtenerTalle}
@@ -147,8 +147,8 @@ export const Talle = () => {
                                 )
                             }
                             options={
-                                complementoList[0].tipoTallesList !== undefined
-                                    ? complementoList[0].tipoTallesList.map((item: any) => ({
+                                complementoList.tipoTallesList !== undefined
+                                    ? complementoList.tipoTallesList.map((item: any) => ({
                                           value: item.idTipoTalle,
                                           label: item.descripcion,
                                       }))

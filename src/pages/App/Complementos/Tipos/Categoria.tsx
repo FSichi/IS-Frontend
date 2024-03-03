@@ -1,28 +1,27 @@
 import { useForm } from 'react-hook-form';
 import { TableForCategoriaList } from '../../../../components/Table/TableForComplementosList';
-import { tableCategoriasData } from '../../../../data/mocks/tableComplementosData';
 import { useEffect, useState } from 'react';
 import { TextInput } from '../../../../components/Inputs/TextInput';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
-import { useDispatch, useSelector } from 'react-redux';
 import {
     addComplemento,
     getComplementosList,
     updateComplemento,
 } from '../../../../redux/slices/complementos';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/dispatch.hook';
 
 type FormFilterValues = {
     categoria: string;
 };
 
 export const Categoria = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const {
         complementoList,
         isLoading: isCategoriaListLoading,
         complementoChange,
-    } = useSelector((state: any) => state.complementos);
+    } = useAppSelector((state: any) => state.complementos);
 
     const {
         register,
@@ -74,6 +73,7 @@ export const Categoria = () => {
 
     useEffect(() => {
         dispatch(getComplementosList('/Categoria'));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [complementoChange]);
 
     return (
@@ -82,7 +82,15 @@ export const Categoria = () => {
                 <div className="md:w-1/2 p-5">
                     <div className="border-2 border-white rounded-lg">
                         <TableForCategoriaList
-                            data={isCategoriaListLoading ? [] : complementoList}
+                            data={
+                                isCategoriaListLoading
+                                    ? []
+                                    : complementoList !== undefined &&
+                                        complementoList.length > 0 &&
+                                        complementoList !== null
+                                      ? complementoList
+                                      : []
+                            }
                             getCategoria={obtenerCategoria}
                         />
                     </div>

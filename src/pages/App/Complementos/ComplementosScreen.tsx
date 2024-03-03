@@ -13,19 +13,20 @@ export const ComplementosScreen = () => {
         setSelectedOption(option);
     };
 
-    const tabContentAlumnoOptions = [
+    const tabContentComplementosOptions = [
         { value: 1, title: 'Color', component: <Color /> },
         { value: 2, title: 'Talle', component: <Talle /> },
         { value: 3, title: 'Marca', component: <Marca /> },
         { value: 4, title: 'Categoria', component: <Categoria /> },
     ];
+
     return (
         <section className="p-5">
             <PageHeader title="Gestion de complementos"></PageHeader>
 
             <div className="bg-gray-800 mx-auto w-3/6 mt-5 py-5 rounded-lg">
                 <div className="flex justify-center">
-                    {tabContentAlumnoOptions.map(option => {
+                    {tabContentComplementosOptions.map(option => {
                         return (
                             <ActionButton
                                 key={option.value}
@@ -41,7 +42,7 @@ export const ComplementosScreen = () => {
             </div>
 
             <div className="mt-5">
-                {tabContentAlumnoOptions.map(option => {
+                {tabContentComplementosOptions.map(option => {
                     return (
                         <div key={option.value}>
                             {selectedOption === option.title && option.component}

@@ -3,7 +3,7 @@ import React from 'react';
 import './styles.css';
 
 interface Props {
-    registerForm: any;
+    registerForm?: any;
     inputName: string;
     inputTitle?: string;
     inputType: string;
@@ -71,6 +71,7 @@ export const TextInputDisabled = ({
                 type={'text'}
                 name={inputName}
                 value={value}
+                onChange={() => {}}
                 className={`text-md mt-2 px-2 py-1 rounded-md w-full text-black text-center
                  border-2 border-gray-300 placeholder-gray-500 shadow-lg shadow-gray-800
                 focus:border-orange-600 focus:outline-none formInput ${disabled ? 'bg-gray-500' : 'bg-gray-100'}

@@ -1,21 +1,13 @@
+import { Article } from '../../interfaces/article';
 import { TableButton } from '../Buttons/ActionButton';
 
 interface Props {
-    data: {
-        id: number;
-        codigoBarra: number;
-        descripcion: string;
-        precioFinal: number;
-        ganancia: number;
-        marca: string;
-        categoria: string;
-        estado: string;
-    }[];
+    data: Article[];
     openStateModal: (type: 'active' | 'inactive') => void;
-    openProductModal: (type: 'new' | 'edit') => void;
+    openProductModal: (type: 'new' | 'edit', article: Article | null) => void;
 }
 
-export const TableForArticulosBaseList = ({ data, openStateModal, openProductModal }: Props) => {
+export const TableForArticulosBaseList = ({ data, openProductModal }: Props) => {
     const headers = [
         'Codigo de barra',
         'Descripcion',
@@ -23,7 +15,7 @@ export const TableForArticulosBaseList = ({ data, openStateModal, openProductMod
         'Ganancia',
         'Marca',
         'Categoria',
-        'Estado',
+        // 'Estado',
         'Accion',
     ];
 
@@ -44,39 +36,39 @@ export const TableForArticulosBaseList = ({ data, openStateModal, openProductMod
             <tbody>
                 {data.map(item => (
                     <tr className="bg-white border-b" key={item.id}>
-                        <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.codigoBarra}
+                        <td className="text-sm text-gray-900 px-6 py-5 whitespace-nowrap font-bold">
+                            {item.codigoBarras}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
                             {item.descripcion}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.precioFinal}
+                            {item.precioFinal ?? 0}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.ganancia}
+                            {item.margenGanancia * 100 + '%'}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.marca}
+                            {item.marcaNombre}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
-                            {item.categoria}
+                            {item.categoriaDescripcion}
                         </td>
-                        <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
+                        {/* <td className="text-sm text-gray-900 font-light px-6 py-5 whitespace-nowrap">
                             <p
                                 className={`rounded-md py-1 ${item.estado === 'Activo' ? 'bg-teal-300 ' : 'bg-indigo-300'}`}>
                                 {item.estado}
                             </p>
-                        </td>
+                        </td> */}
                         <td className="text-sm text-gray-900 font-light px-4 py-5 whitespace-nowrap">
                             <TableButton
                                 title="Modificar"
                                 action={() => {
-                                    openProductModal('edit');
+                                    openProductModal('edit', item);
                                 }}
                                 customClass="text-white rounded-md bg-cyan-500 hover:bg-black mr-2 w-24"
                             />
-                            <TableButton
+                            {/* <TableButton
                                 title={item.estado === 'Activo' ? 'Deshabilitar' : 'Activar'}
                                 action={() => {
                                     openStateModal(
@@ -84,7 +76,7 @@ export const TableForArticulosBaseList = ({ data, openStateModal, openProductMod
                                     );
                                 }}
                                 customClass={`rounded-md ${item.estado === 'Activo' ? 'bg-red-600 text-white ' : 'bg-teal-300 text-black hover:text-white'} hover:bg-black ml-2 w-24`}
-                            />
+                            /> */}
                         </td>
                     </tr>
                 ))}

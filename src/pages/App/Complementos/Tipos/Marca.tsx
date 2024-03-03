@@ -4,25 +4,25 @@ import { TableForMarcaList } from '../../../../components/Table/TableForCompleme
 import { useEffect, useState } from 'react';
 import { TextInput } from '../../../../components/Inputs/TextInput';
 import { ActionButton } from '../../../../components/Buttons/ActionButton';
-import { useDispatch, useSelector } from 'react-redux';
 import {
     addComplemento,
     getComplementosList,
     updateComplemento,
 } from '../../../../redux/slices/complementos';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/dispatch.hook';
 
 type FormFilterValues = {
     marca: string;
 };
 
 export const Marca = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const {
         complementoList,
         isLoading: isMarcaListLoading,
         complementoChange,
-    } = useSelector((state: any) => state.complementos);
+    } = useAppSelector((state: any) => state.complementos);
 
     const {
         register,
@@ -71,6 +71,7 @@ export const Marca = () => {
 
     useEffect(() => {
         dispatch(getComplementosList('/Marca'));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [complementoChange]);
 
     return (
@@ -79,7 +80,15 @@ export const Marca = () => {
                 <div className="md:w-1/2 p-5">
                     <div className="border-2 border-white rounded-lg">
                         <TableForMarcaList
-                            data={isMarcaListLoading ? [] : complementoList}
+                            data={
+                                isMarcaListLoading
+                                    ? []
+                                    : complementoList !== undefined &&
+                                        complementoList.length > 0 &&
+                                        complementoList !== null
+                                      ? complementoList
+                                      : []
+                            }
                             getMarca={obtenerMarca}
                         />
                     </div>

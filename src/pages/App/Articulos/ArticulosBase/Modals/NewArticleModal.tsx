@@ -1,41 +1,53 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { categoriaOptions, marcaOptions } from '../../../../../data/select/selectOptions';
+import { useForm, useWatch } from 'react-hook-form';
 import { ActionButton } from '../../../../../components/Buttons/ActionButton';
-import { TextInput } from '../../../../../components/Inputs/TextInput';
+import { TextInput, TextInputDisabled } from '../../../../../components/Inputs/TextInput';
 import { ReactSelect } from '../../../../../components/Inputs/ReactSelect';
 import { GenericModal } from '../../../../../components/Modals/GenericModal';
 import { ModalContext } from '../../../../../context/modal.context';
+import { Article } from '../../../../../interfaces/article';
+import { getComplementosOptionsList } from '../../../../../redux/slices/complementos';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/dispatch.hook';
+import { createArticle, updateArticle } from '../../../../../redux/slices/articulos';
 
 interface Props {
     value: boolean;
     type: 'new' | 'edit';
+    article: Article | null;
 }
 
 type FormFilterValues = {
     descripcion: string;
-    codigoBarra: number;
+    codigoBarras: string;
     costo: number;
     margenGanancia: number;
     marca: string;
     categoria: string;
     porcentajeIVA: number;
     precioFinal: number;
-    netoGrabado: number;
+    netoGravado: number;
 };
-
-type NameSelectInputs = 'marca' | 'categoria';
 
 type SelectedOptionType = {
     value: string | number;
     label: string;
 };
 
-export const NewArticleModal = ({ value, type }: Props) => {
-    const { closeModal, openModal, state } = useContext(ModalContext);
+type NameSelectInputs = 'marca' | 'categoria';
 
-    const { register, handleSubmit, setValue } = useForm<FormFilterValues>();
+export const NewArticleModal = ({ value, type }: Props) => {
+    const { complementoList } = useAppSelector(state => state.complementos);
+    const { articuloSelected } = useAppSelector(state => state.articulos);
+
+    const dispatch = useAppDispatch();
+
+    const { closeModal, openModal, state } = useContext(ModalContext);
+    const { register, handleSubmit, setValue, control, getValues } = useForm<FormFilterValues>();
+
+    const costo = useWatch({ name: 'costo', control, defaultValue: 0 });
+    const margenGanancia = useWatch({ name: 'margenGanancia', control, defaultValue: 0 });
+    const porcentajeIVA = useWatch({ name: 'porcentajeIVA', control, defaultValue: 0 });
 
     const [selectValues, setSelectValues] = useState({
         marca: { label: '', value: '' },
@@ -52,8 +64,66 @@ export const NewArticleModal = ({ value, type }: Props) => {
     }, [value]);
 
     const onSubmit = handleSubmit(data => {
-        console.log(data);
+        const dataToSend: Article = {
+            codigoBarras: data.codigoBarras as unknown as string,
+            descripcion: data.descripcion,
+            marcaId: Number(selectValues.marca.value),
+            marcaNombre: selectValues.marca.label,
+            categoriaId: Number(selectValues.categoria.value),
+            categoriaDescripcion: selectValues.categoria.label,
+            costo: data.costo,
+            margenGanancia: data.margenGanancia / 100,
+            porcentajeIVA: data.porcentajeIVA / 100,
+            netoGravado: data.netoGravado,
+            precioFinal: data.precioFinal,
+        };
+
+        if (type === 'edit') {
+            dataToSend.id = articuloSelected?.id;
+        }
+
+        const action = type === 'new' ? createArticle : updateArticle;
+        dispatch(action(dataToSend, closeModal));
     });
+
+    useEffect(() => {
+        if (costo === undefined || margenGanancia === undefined || porcentajeIVA === undefined) {
+            return;
+        }
+
+        const netoGravado = Number(costo) + Number(costo) * (Number(margenGanancia) / 100);
+        const iva = netoGravado * (Number(porcentajeIVA) / 100);
+
+        setValue('netoGravado', netoGravado);
+        setValue('precioFinal', netoGravado + iva);
+    }, [costo, margenGanancia, porcentajeIVA]);
+
+    useEffect(() => {
+        dispatch(getComplementosOptionsList());
+
+        if (type === 'edit' && articuloSelected !== null) {
+            setValue('codigoBarras', articuloSelected?.codigoBarras);
+            setValue('descripcion', articuloSelected?.descripcion);
+            setValue('costo', articuloSelected?.costo);
+            setValue('margenGanancia', Number(articuloSelected?.margenGanancia) * 100);
+            setValue('porcentajeIVA', Number(articuloSelected?.porcentajeIVA) * 100);
+            setValue('netoGravado', articuloSelected?.netoGravado);
+            setValue('precioFinal', articuloSelected?.precioFinal);
+            setValue('marca', articuloSelected?.marcaNombre);
+            setValue('categoria', articuloSelected?.categoriaDescripcion);
+
+            setSelectValues({
+                marca: {
+                    label: articuloSelected?.marcaNombre,
+                    value: articuloSelected?.marcaId.toString(),
+                },
+                categoria: {
+                    label: articuloSelected?.categoriaDescripcion,
+                    value: articuloSelected?.categoriaId.toString(),
+                },
+            });
+        }
+    }, []);
 
     return (
         <>
@@ -68,7 +138,7 @@ export const NewArticleModal = ({ value, type }: Props) => {
                                 inputTitle={'Codigo de barras'}
                                 placeholder={'...'}
                                 keyPressEvent={() => {}}
-                                registerForm={{ ...register('codigoBarra', { required: false }) }}
+                                registerForm={{ ...register('codigoBarras', { required: false }) }}
                                 customContainerClassName="mr-5 w-full"
                             />
                             <ReactSelect
@@ -80,9 +150,19 @@ export const NewArticleModal = ({ value, type }: Props) => {
                                         selectedOption || { value: '', label: '' },
                                     )
                                 }
-                                options={marcaOptions}
+                                options={
+                                    complementoList !== undefined &&
+                                    complementoList !== null &&
+                                    complementoList.marcaList !== undefined
+                                        ? complementoList.marcaList.map((item: any) => ({
+                                              value: item.idMarca,
+                                              label: item.nombre,
+                                          }))
+                                        : []
+                                }
                                 isSearchable
                             />
+
                             <ReactSelect
                                 inputTitle="Categoria"
                                 value={selectValues.categoria}
@@ -92,7 +172,16 @@ export const NewArticleModal = ({ value, type }: Props) => {
                                         selectedOption || { value: '', label: '' },
                                     )
                                 }
-                                options={categoriaOptions}
+                                options={
+                                    complementoList !== undefined &&
+                                    complementoList !== null &&
+                                    complementoList.categoriaList !== undefined
+                                        ? complementoList.categoriaList.map((item: any) => ({
+                                              value: item.idCategoria,
+                                              label: item.descripcion,
+                                          }))
+                                        : []
+                                }
                                 isSearchable
                             />
                             <TextInput
@@ -124,24 +213,22 @@ export const NewArticleModal = ({ value, type }: Props) => {
                                 registerForm={{ ...register('porcentajeIVA', { required: false }) }}
                                 customContainerClassName="mr-5 w-full"
                             />
-                            <TextInput
-                                inputName={'netoGrabado'}
-                                inputType={'number'}
-                                inputTitle={'Neto grabado'}
+                            <TextInputDisabled
+                                inputName={'netoGravado'}
+                                inputTitle={'Neto gravado'}
                                 placeholder={'...'}
                                 keyPressEvent={() => {}}
                                 disabled
-                                registerForm={{ ...register('netoGrabado', { required: false }) }}
+                                value={getValues().netoGravado}
                                 customContainerClassName="mr-5 w-full"
                             />
-                            <TextInput
+                            <TextInputDisabled
                                 inputName={'precioFinal'}
-                                inputType={'number'}
                                 inputTitle={'Precio final'}
                                 placeholder={'...'}
                                 keyPressEvent={() => {}}
                                 disabled
-                                registerForm={{ ...register('precioFinal', { required: false }) }}
+                                value={getValues().precioFinal}
                                 customContainerClassName="mr-5 w-full"
                             />
 
@@ -157,7 +244,7 @@ export const NewArticleModal = ({ value, type }: Props) => {
                         </div>
                         <div className="flex justify-end">
                             <ActionButton
-                                title="Registrar Cliente"
+                                title={type === 'new' ? 'Crear Articulo' : 'Modificar Articulo'}
                                 type="submit"
                                 action={() => {}}
                                 customClass="bg-teal-400 text-black hover:bg-teal-400 mt-5 "
