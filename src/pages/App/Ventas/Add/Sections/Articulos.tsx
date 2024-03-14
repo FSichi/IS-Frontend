@@ -1,169 +1,311 @@
+import { useEffect, useState } from 'react';
 import { ActionButton } from '../../../../../components/Buttons/ActionButton';
 import { SelectInput } from '../../../../../components/Inputs/SelectInput';
 import { TextInput } from '../../../../../components/Inputs/TextInput';
 import { TableForArticulosStock } from './TableForArticulosStock';
 import { TableForArticulosVenta } from './TableForArticulosVenta';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/dispatch.hook';
+import { getComplementosList, getInventarioList } from '../../../../../redux/slices/inventario';
+import { useForm } from 'react-hook-form';
+import { ReactSelect } from '../../../../../components/Inputs/ReactSelect';
+import { createVentaInitial } from '../../../../../redux/slices/venta';
 
-const dataInventario = {
-    idArticulo: 1,
-    codigo: '123456',
-    articulo: 'Camisa Termica de Futbol',
-    categoria: 'Manga Larga',
-    marca: 'Nike',
-    precio: 100,
-    filters: {
-        tipoTalle: 1,
-        talle: 1,
-        color: 1,
-    },
-    inventario: [
-        {
-            id: 1,
-            cantidad: 7,
-            color: 'Azul',
-            tipoTalle: 'Americano',
-            talle: 'S',
-        },
-        {
-            id: 2,
-            cantidad: 12,
-            color: 'Blanco',
-            tipoTalle: 'Americano',
-            talle: 'S',
-        },
-        {
-            id: 3,
-            cantidad: 4,
-            color: 'Negro',
-            tipoTalle: 'Americano',
-            talle: 'M',
-        },
-    ],
+type FormFilterValues = {
+    codigoBarra: string;
+    tipoTalle: string;
+    talle: string;
+    color: string;
 };
 
-const dataCarrito = [
-    {
-        id: 1,
-        cantidad: 1,
-        color: 'Azul',
-        tipoTalle: 'Americano',
-        talle: 'S',
-    },
-    {
-        id: 2,
-        cantidad: 2,
-        color: 'Blanco',
-        tipoTalle: 'Americano',
-        talle: 'S',
-    },
-];
+type SelectedOptionType = {
+    value: string | number;
+    label: string;
+};
+
+type NameSelectInputs = 'tipoTalle' | 'talle' | 'color';
 
 export const Articulos = () => {
+    const dispatch = useAppDispatch();
+    const { inventarioList, isLoading, complementosList } = useAppSelector(
+        state => state.inventario,
+    );
+
+    const [cart, setCart] = useState<any>([]);
+
+    const { register, handleSubmit, setValue, control, getValues } = useForm<FormFilterValues>();
+
+    const [selectValues, setSelectValues] = useState({
+        tipoTalle: { label: '', value: '' },
+        talle: { label: '', value: '' },
+        color: { label: '', value: '' },
+    });
+
+    const handleChangeSelect = (name: NameSelectInputs, selectedOption: SelectedOptionType) => {
+        setSelectValues(prevValues => ({ ...prevValues, [name]: selectedOption }));
+        setValue(name, selectedOption.value as string);
+    };
+
+    const onSubmit = handleSubmit(data => {
+        if (data.codigoBarra === '') {
+            alert('El campo de codigo de barra no puede estar vacio');
+            return;
+        }
+
+        const payload = {
+            idSucursal: 2,
+            codigoBarra: data.codigoBarra,
+            idTipoTalle: selectValues.tipoTalle.value !== '' ? selectValues.tipoTalle.value : null,
+            idTalle: selectValues.talle.value !== '' ? selectValues.talle.value : null,
+            idColor: selectValues.color.value !== '' ? selectValues.color.value : null,
+        };
+
+        if (
+            (payload.idTipoTalle === null && payload.idTalle !== null) ||
+            (payload.idTalle === null && payload.idTipoTalle !== null)
+        ) {
+            alert('Debe seleccionar un tipo de talle y un talle');
+            return;
+        }
+
+        dispatch(getInventarioList(payload));
+    });
+
+    const addItemToCart = (item: any, quantity: number) => {
+        const payload = {
+            item,
+            quantity: Number(quantity),
+        };
+
+        if (quantity <= 0) {
+            alert('La cantidad debe ser mayor a 0');
+            return;
+        }
+
+        if (cart.length > 0) {
+            const itemIndex = cart.findIndex(
+                (i: any) => i.item.idInventario === payload.item.idInventario,
+            );
+            if (itemIndex >= 0) {
+                const newCart = cart.map((i: any) => {
+                    if (i.item.idInventario === payload.item.idInventario) {
+                        return {
+                            ...i,
+                            quantity: i.quantity + payload.quantity,
+                        };
+                    }
+                    return i;
+                });
+
+                setCart(newCart);
+                return;
+            }
+        }
+
+        setCart([...cart, payload]);
+
+        console.log('Payload: ', payload);
+    };
+
+    const modifyQuantity = (item: any, quantity: number) => {
+        if (quantity > item.cantidad) {
+            alert('La cantidad no puede ser mayor al stock');
+            return;
+        }
+
+        if (quantity <= 0) {
+            const newCart = cart.filter((i: any) => i.item.idInventario !== item.idInventario);
+            setCart(newCart);
+            return;
+        }
+
+        const newCart = cart.map((i: any) => {
+            if (i.item.idInventario === item.idInventario) {
+                return {
+                    ...i,
+                    quantity,
+                };
+            }
+            return i;
+        });
+
+        setCart(newCart);
+    };
+
+    const finishCartProcess = () => {
+        console.log('Cart: ', cart);
+        dispatch(createVentaInitial(cart));
+    };
+
+    useEffect(() => {
+        dispatch(getComplementosList());
+    }, []);
+
     return (
         <section className="bg-gray-800 rounded-md p-5">
-            <div className=" p-3 flex rounded-md">
-                <div className="flex w-1/3">
-                    <TextInput
-                        inputName={'name'}
-                        inputType={'text'}
-                        placeholder={'Codigo de Articulo...'}
-                        keyPressEvent={() => {}}
-                        registerForm={() => {}}
-                        customContainerClassName="w-full"
-                        customInputClassName={'mt-0 h-10'}
-                    />
+            <form onSubmit={onSubmit}>
+                <div className=" p-3 flex rounded-md">
+                    <div className="flex w-11/12">
+                        <TextInput
+                            inputTitle="Codigo de Barra:"
+                            inputName={'codigoBarra'}
+                            inputType={'text'}
+                            placeholder={'Codigo de Articulo...'}
+                            keyPressEvent={() => {}}
+                            registerForm={{ ...register('codigoBarra', { required: false }) }}
+                            customContainerClassName="w-1/4"
+                        />
 
-                    <ActionButton
-                        title="Buscar"
-                        action={() => {}}
-                        customClass="bg-gray-900 ml-3 hover:bg-indigo-400 hover:text-gray-900 mt-2"
-                    />
-                </div>
+                        <ReactSelect
+                            inputTitle="Tipo Talle:"
+                            customInputContainer="w-1/4 mx-5"
+                            value={selectValues.tipoTalle}
+                            onChange={selectedOption =>
+                                handleChangeSelect(
+                                    'tipoTalle',
+                                    selectedOption || { value: '', label: '' },
+                                )
+                            }
+                            options={
+                                complementosList !== undefined &&
+                                complementosList !== null &&
+                                complementosList.tipoTallesList !== undefined
+                                    ? [
+                                          { value: '', label: '' },
+                                          ...complementosList.tipoTallesList.map((item: any) => ({
+                                              value: item.idTipoTalle,
+                                              label: item.descripcion,
+                                          })),
+                                      ]
+                                    : []
+                            }
+                            isSearchable
+                        />
 
-                <div className="border-gray-200 border-l-2 ml-10"></div>
+                        <ReactSelect
+                            inputTitle="Talle:"
+                            customInputContainer="w-1/4 ml-0 mr-5"
+                            value={selectValues.talle}
+                            onChange={selectedOption =>
+                                handleChangeSelect(
+                                    'talle',
+                                    selectedOption || { value: '', label: '' },
+                                )
+                            }
+                            options={
+                                complementosList !== undefined &&
+                                complementosList !== null &&
+                                complementosList.tallesList !== undefined
+                                    ? [
+                                          { value: '', label: '' },
+                                          ...complementosList.tallesList.map((item: any) => ({
+                                              value: item.idTalle,
+                                              label: item.talleArticulo,
+                                          })),
+                                      ]
+                                    : []
+                            }
+                            isSearchable
+                        />
 
-                <div className="flex ml-10 w-2/3">
-                    <SelectInput
-                        inputName={'tipoTalle'}
-                        placeholder
-                        placeholderText="Tipo de Talle..."
-                        options={[
-                            { value: 1, label: 'Americano' },
-                            { value: 2, label: 'Europeo' },
-                        ]}
-                        registerForm={() => {}}
-                        customContainerClassName="mr-5 w-1/3 ml-3"
-                        customInputClassName="h-10 mt-0"
-                    />
-                    <SelectInput
-                        inputName={'talle'}
-                        placeholder
-                        placeholderText="Talle..."
-                        options={[
-                            { value: 1, label: '15' },
-                            { value: 2, label: '16' },
-                        ]}
-                        registerForm={() => {}}
-                        customContainerClassName="mr-5 w-1/3 ml-3"
-                        customInputClassName="h-10 mt-0"
-                    />
-                    <SelectInput
-                        inputName={'color'}
-                        placeholder
-                        placeholderText="Color..."
-                        options={[
-                            { value: 1, label: 'Azul' },
-                            { value: 2, label: 'Verde' },
-                            { value: 3, label: 'Rojo' },
-                            { value: 4, label: 'Amarillo' },
-                            { value: 5, label: 'Negro' },
-                        ]}
-                        registerForm={() => {}}
-                        customContainerClassName="mr-5 w-1/3 ml-3"
-                        customInputClassName="h-10 mt-0"
-                    />
-                </div>
-            </div>
+                        <ReactSelect
+                            inputTitle="Color:"
+                            customInputContainer="w-1/4"
+                            value={selectValues.color}
+                            onChange={selectedOption =>
+                                handleChangeSelect(
+                                    'color',
+                                    selectedOption || { value: '', label: '' },
+                                )
+                            }
+                            options={
+                                complementosList !== undefined &&
+                                complementosList !== null &&
+                                complementosList.colorList !== undefined
+                                    ? [
+                                          { value: '', label: '' },
+                                          ...complementosList.colorList.map((item: any) => ({
+                                              value: item.idColor,
+                                              label: item.nombre,
+                                          })),
+                                      ]
+                                    : []
+                            }
+                            isSearchable
+                        />
+                    </div>
 
-            <div className="flex w-full mt-5">
-                <div className="w-1/2 ">
-                    <div className="bg-gray-500 mr-2 p-3 rounded-md">
-                        <div className="flex justify-between">
-                            <h1 className="text-lg mb-3">Articulo Seleccionado:</h1>
-                            {/* <ActionButton
-                                title="X"
-                                action={() => {}}
-                                customClass="bg-red-800 m-3 w-10"
-                            /> */}
-                        </div>
-                        <div className="p-3 bg-gray-800 rounded-md">
-                            <h1 className="text-lg">
-                                <span className="text-red-400 font-bold text-lg">Elemento:</span>{' '}
-                                Camisa Manga Larga Futbol
-                            </h1>
-                            <h1 className="text-lg">
-                                <span className="text-red-400 font-bold text-lg">Categoria:</span>{' '}
-                                Manga Larga
-                            </h1>
-                            <h1 className="text-lg">
-                                <span className="text-red-400 font-bold">Marca:</span> Nike
-                            </h1>
-                        </div>
-                        <div className="border-gray-200 border-b-2 mt-3"></div>
-                        <h1 className="mt-5 mb-3">Listado de Unidades en Inventario:</h1>
+                    <div className="border-gray-200 border-l-2 ml-10"></div>
 
-                        <TableForArticulosStock data={dataInventario.inventario} />
+                    <div className="flex justify-center ml-10 w-2/12">
+                        <ActionButton
+                            title="Buscar"
+                            type="submit"
+                            customClass="bg-gray-900 ml-3 hover:bg-indigo-400 hover:text-gray-900 align-middle mt-4 mb-4"
+                        />
                     </div>
                 </div>
-                <div className="w-1/2">
-                    <div className="bg-gray-500 ml-2 p-3 rounded-md">
-                        <h1 className="text-center text-xl font-bold mb-3">
-                            Articulos Agregados a la Venta
-                        </h1>
-                        <TableForArticulosVenta data={dataCarrito} />
+            </form>
+
+            {inventarioList.length !== 0 && (
+                <div className="flex w-full mt-5">
+                    <div className="w-1/2 ">
+                        <div className="bg-gray-500 mr-2 p-3 rounded-md">
+                            <div className="flex justify-between">
+                                <h1 className="text-lg mb-3">Articulo Seleccionado:</h1>
+                            </div>
+                            <div className="p-3 bg-gray-800 rounded-md">
+                                <h1 className="text-lg">
+                                    <span className="text-red-400 font-bold text-lg">
+                                        Elemento:
+                                    </span>{' '}
+                                    {inventarioList[0].articuloDescripcion}
+                                </h1>
+                                <h1 className="text-lg">
+                                    <span className="text-red-400 font-bold text-lg">
+                                        Categoria:
+                                    </span>{' '}
+                                    {inventarioList[0].articuloCategoria}
+                                </h1>
+                                <h1 className="text-lg">
+                                    <span className="text-red-400 font-bold">Marca:</span>{' '}
+                                    {inventarioList[0].articuloMarca}
+                                </h1>
+                            </div>
+                            <div className="border-gray-200 border-b-2 mt-3"></div>
+                            <h1 className="mt-5 mb-3">Listado de Unidades en Inventario:</h1>
+
+                            <TableForArticulosStock
+                                // data={dataInventario}
+                                data={isLoading ? [] : inventarioList}
+                                addItemToCart={addItemToCart}
+                                cart={cart}
+                            />
+                        </div>
+                    </div>
+                    <div className="w-1/2">
+                        {cart.length > 0 && (
+                            <>
+                                <div className="bg-gray-500 ml-2 p-3 rounded-md">
+                                    <h1 className="text-center text-xl font-bold mb-3">
+                                        Articulos Agregados a la Venta
+                                    </h1>
+                                    <TableForArticulosVenta
+                                        data={cart}
+                                        modifyQuantity={modifyQuantity}
+                                    />
+                                </div>
+                                <div className="flex justify-center">
+                                    <ActionButton
+                                        title="Proceder a Venta"
+                                        customClass="bg-cyan-500 mt-5 hover:bg-indigo-400 hover:text-gray-900"
+                                        action={finishCartProcess}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
-            </div>
+            )}
         </section>
     );
 };

@@ -6,6 +6,8 @@ import storage from 'redux-persist/lib/storage';
 import { authSlice } from '../slices/auth';
 import { complementosSlice } from '../slices/complementos';
 import { articulosSlice } from '../slices/articulos';
+import { inventarioSlice } from '../slices/inventario';
+import { ventaSlice } from '../slices/venta';
 
 const persistConfig = {
     key: 'auth',
@@ -19,6 +21,8 @@ export const store = configureStore({
         auth: authPersistedReducer,
         complementos: complementosSlice.reducer,
         articulos: articulosSlice.reducer,
+        inventario: inventarioSlice.reducer,
+        venta: ventaSlice.reducer,
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware({

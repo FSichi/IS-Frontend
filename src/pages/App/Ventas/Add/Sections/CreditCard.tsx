@@ -2,8 +2,21 @@ import { useState } from 'react';
 import Cards, { Focused } from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import { ActionButton } from '../../../../../components/Buttons/ActionButton';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/dispatch.hook';
+import { efectuarPago } from '../../../../../redux/slices/venta';
 
-export const CreditCard = () => {
+interface Props {
+    clientes: {
+        anonimo: boolean;
+        real: boolean;
+        data: any;
+    };
+}
+
+export const CreditCard = ({ clientes }: Props) => {
+    const dispatch = useAppDispatch();
+    const { ventaSelected } = useAppSelector(state => state.venta);
+
     const [state, setState] = useState({
         number: '',
         name: '',
@@ -27,11 +40,38 @@ export const CreditCard = () => {
     };
 
     const processPayment = () => {
-        console.log('number => ', state.number);
-        console.log('name => ', state.name);
-        console.log('expiry => ', state.expiry);
-        console.log('cvc => ', state.cvc);
-        console.log(JSON.stringify(state));
+        if (!clientes.real) {
+            alert('Para pagos con tarjeta el cliente real es obligatorio');
+            return;
+        }
+
+        if (
+            state.number.length < 16 ||
+            state.name.length < 5 ||
+            state.expiry.length < 4 ||
+            state.cvc.length < 3
+        ) {
+            alert('Todos los campos de la tarjeta son obligatorios');
+            return;
+        }
+
+        if (clientes.data === null) {
+            alert('El cliente real no esta seleccionado');
+            return;
+        }
+
+        const payload = {
+            numeroTarjeta: state.number,
+            nombreTitular: state.name,
+            mesVencimiento: state.expiry[0] + state.expiry[1],
+            anioVencimiento: state.expiry[2] + state.expiry[3],
+            cvc: state.cvc,
+            dniTitular: clientes.data.dni,
+        };
+
+        dispatch(efectuarPago(ventaSelected.id, clientes.data.idCliente, 'Tarjeta', payload));
+
+        console.log('Payload: ', payload);
     };
 
     return (

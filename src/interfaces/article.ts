@@ -12,3 +12,19 @@ export interface Article {
     marcaNombre: string;
     categoriaDescripcion: string;
 }
+
+export interface ArticleStock {
+    idInventario: number;
+    cantidad: number;
+    idStock: number;
+    stockColor: string;
+    stockTalle: string;
+    stockTalleTipoTalle: string;
+    idArticulo: number;
+    codigoBarra: string;
+    articuloCategoria: string;
+    articuloDescripcion: string;
+    articuloMarca: string;
+    idSucursal: number;
+    nombreSucursal: string;
+}
